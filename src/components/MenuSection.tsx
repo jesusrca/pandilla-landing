@@ -54,6 +54,15 @@ const drinks = [
 
 export default function MenuSection() {
     const [hoveredImage, setHoveredImage] = useState<string | null>(null);
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            setMousePos({ x: e.clientX, y: e.clientY });
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
 
     const handleMouseEnter = (image: string) => {
         setHoveredImage(image);
@@ -78,55 +87,39 @@ export default function MenuSection() {
                 <div className="w-full flex-1 mt-24 md:mt-32 grid grid-cols-12 gap-8 relative h-[calc(100vh-200px)]">
 
                     {/* Left Column - Menu Items */}
-                    <div className="col-span-12 md:col-span-4 flex flex-col justify-start">
+                    <div className="col-span-12 md:col-span-6 flex flex-col justify-start">
                         {menuData.leftColumn.map((item, i) => (
                             <div
                                 key={i}
-                                className="group relative py-6 md:py-8 border-b border-brand-brown/40 cursor-pointer flex flex-col transition-all duration-300"
+                                className="group relative py-4 md:py-6 border-b border-brand-brown/40 cursor-pointer flex flex-col transition-all duration-300"
                                 onMouseEnter={() => handleMouseEnter(item.image)}
                                 onMouseLeave={handleMouseLeave}
                             >
-                                <h2 className="font-display text-4xl md:text-6xl text-brand-brown group-hover:text-orange transition-colors">
+                                <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-brand-brown group-hover:text-orange transition-colors">
                                     {item.title}
                                 </h2>
                                 {item.title === "Tricolore" && (
-                                    <p className="font-mono text-[9px] md:text-[11px] text-brand-brown/80 mt-2 uppercase tracking-widest max-w-[280px]">
+                                    <p className="font-mono text-[9px] md:text-[10px] text-brand-brown/80 mt-2 uppercase tracking-widest max-w-[280px]">
                                         {item.description}
                                     </p>
                                 )}
                             </div>
                         ))}
-
-                        {/* Space for characters (handled in ScrollContainer) */}
-                        <div className="mt-auto h-32 w-48" />
-                    </div>
-
-                    {/* Middle Column - Large Image */}
-                    <div className="col-span-12 md:col-span-4 h-full relative flex items-center justify-center">
-                        <div className="w-full h-full max-h-[700px] relative rounded-lg overflow-hidden border-8 border-[#f3e1b9] shadow-2xl">
-                            <Image
-                                src={hoveredImage || "/content/roast-beef.jpg"}
-                                alt="Menu Preview"
-                                fill
-                                className="object-cover transition-all duration-700 ease-in-out"
-                                priority
-                            />
-                        </div>
                     </div>
 
                     {/* Right Column - Menu Items & Drinks */}
-                    <div className="col-span-12 md:col-span-4 flex flex-col h-full">
+                    <div className="col-span-12 md:col-span-6 flex flex-col h-full">
                         {menuData.rightColumn.map((item, i) => (
                             <div
                                 key={i}
-                                className="group py-6 md:py-8 border-b border-brand-brown/40 cursor-pointer flex flex-col transition-all duration-300 text-right md:text-left"
+                                className="group py-4 md:py-6 border-b border-brand-brown/40 cursor-pointer flex flex-col transition-all duration-300 text-right md:text-left"
                                 onMouseEnter={() => handleMouseEnter(item.image)}
                                 onMouseLeave={handleMouseLeave}
                             >
-                                <h2 className="font-display text-4xl md:text-6xl text-brand-brown group-hover:text-orange transition-colors">
+                                <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-brand-brown group-hover:text-orange transition-colors">
                                     {item.title}
                                 </h2>
-                                <p className="font-mono text-[9px] md:text-[11px] text-brand-brown/80 mt-2 uppercase tracking-widest md:max-w-[280px]">
+                                <p className="font-mono text-[9px] md:text-[10px] text-brand-brown/80 mt-2 uppercase tracking-widest md:max-w-[280px]">
                                     {item.description}
                                 </p>
                             </div>
@@ -156,6 +149,25 @@ export default function MenuSection() {
                     </div>
                 </div>
             </div>
+
+            {/* Floating Image Preview */}
+            {hoveredImage && (
+                <div
+                    className="fixed pointer-events-none z-[1000] transition-opacity duration-300 opacity-100"
+                    style={{
+                        left: Math.min(mousePos.x + 20, typeof window !== 'undefined' ? window.innerWidth - 420 : 0),
+                        top: Math.min(mousePos.y - 150, typeof window !== 'undefined' ? window.innerHeight - 320 : 0),
+                    }}
+                >
+                    <div className="animate-float">
+                        <img
+                            src={hoveredImage}
+                            alt="Plato"
+                            className="w-64 md:w-80 h-auto rounded-xl shadow-2xl border-8 border-white -rotate-3 transition-transform duration-300"
+                        />
+                    </div>
+                </div>
+            )}
         </section>
     );
 }
