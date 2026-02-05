@@ -1,26 +1,179 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@font-face {
+  font-family: 'Denton';
+  src: url('/Fonts-2/DentonCondensedTest-Light.otf') format('opentype');
+  font-weight: 300;
+  font-display: swap;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@font-face {
+  font-family: 'Myriad Pro';
+  src: url('/Fonts-2/MyriadPro-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-display: swap;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@font-face {
+  font-family: 'PP Fraktion Mono';
+  src: url('/Fonts-2/PPFraktionMono-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@theme {
+  --color-brand-yellow: #F9E0A4;
+  --color-brand-cream: #F7F1E8;
+  --color-brand-brown: #75391C;
+
+  --color-cream: var(--color-brand-yellow);
+  --color-beige: var(--color-brand-cream);
+  --color-orange: #E85D3C;
+  --color-brown: var(--color-brand-brown);
+  --color-dark-brown: #4A2410;
+  --color-light-cream: var(--color-brand-cream);
+  --color-accent-orange: #FF6B47;
+
+  --font-primary: 'Myriad Pro', 'Helvetica Neue', sans-serif;
+  --font-display: 'Denton', serif;
+  --font-mono: 'PP Fraktion Mono', monospace;
+
+  --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-fadeInUp: fadeInUp 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  --animate-slideInRight: slideInRight 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  --animate-slideInLeft: slideInLeft 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  --animate-slideInDown: slideInDown 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  --animate-slideInUp: slideInUp 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  --animate-scaleIn: scaleIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  --animate-rotateIn: rotateIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
   }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes rotateIn {
+  from {
+    opacity: 0;
+    transform: rotate(-10deg) scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
+:root {
+  --background: #F9E0A4;
+  --foreground: #75391C;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-primary);
+  overflow: hidden;
+  height: 100dvh;
+  width: 100vw;
+}
+
+/* Custom Utilities */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
 }
