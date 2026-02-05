@@ -110,13 +110,12 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
             y: '-50%',
         },
         2: {
-            top: 'auto',
-            bottom: '20px',
-            left: '30px',
-            scale: 0.16,
+            top: '85%',
+            left: '12%',
+            scale: 0.14,
             opacity: 1,
-            x: '0%',
-            y: '0%',
+            x: '-50%',
+            y: '-50%',
         },
         default: {
             opacity: 0,

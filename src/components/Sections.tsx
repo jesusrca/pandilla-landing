@@ -38,16 +38,18 @@ export function HeroSection() {
 
 export function CharacterSection() {
     return (
-        <div className="w-full h-full bg-[#f9e0a4] relative overflow-hidden flex items-center justify-center">
-            <div
-                className="absolute inset-0 pointer-events-none opacity-100 z-0"
-                style={{
-                    backgroundImage: 'url("/content/Trama.svg")',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat'
-                }}
-            />
+        <div className="w-full h-full relative overflow-hidden">
+            {/* Capa de fondo base */}
+            <div className="absolute inset-0 bg-[#f9e0a4] z-0" />
+
+            {/* Capa de la trama (encima del color, debajo de los personajes) */}
+            <div className="absolute inset-0 z-10 pointer-events-none">
+                <img
+                    src="/content/Trama.svg"
+                    alt="Pattern"
+                    className="w-full h-full object-cover"
+                />
+            </div>
         </div>
     );
 }
