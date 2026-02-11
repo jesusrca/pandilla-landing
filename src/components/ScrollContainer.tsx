@@ -196,9 +196,9 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
         },
         menuMobile: {
             ...baseVariant,
-            top: '13.5%',
-            left: '14.5%',
-            scale: 0.26,
+            top: '9%',
+            left: '13%',
+            scale: 0.34,
         },
         default: {
             ...baseVariant,
