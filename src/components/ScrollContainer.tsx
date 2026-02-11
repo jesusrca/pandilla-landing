@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface ScrollContainerProps {
     children: React.ReactNode[];
@@ -10,8 +10,15 @@ interface ScrollContainerProps {
 export default function ScrollContainer({ children }: ScrollContainerProps) {
     const [currentSection, setCurrentSection] = useState(0);
     const [isScrolling, setIsScrolling] = useState(false);
+    const [frameIndex, setFrameIndex] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
     const touchStartX = useRef(0);
+    const animationFrames = [
+        '/content/animacion/pandilla-animacion-01.svg',
+        '/content/animacion/pandilla-animacion-02.svg',
+        '/content/animacion/pandilla-animacion-03.svg',
+        '/content/animacion/pandilla-animacion-04.svg',
+    ];
 
     const goToSection = useCallback((index: number) => {
         if (index < 0 || index >= children.length || index === currentSection || isScrolling) return;
@@ -91,12 +98,19 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
         };
     }, [currentSection, handleKeyDown, handleWheel, goToSection, isScrolling]);
 
+    useEffect(() => {
+        const interval = window.setInterval(() => {
+            setFrameIndex((prev) => (prev + 1) % animationFrames.length);
+        }, 340);
+        return () => window.clearInterval(interval);
+    }, [animationFrames.length]);
+
     // Character variants for animation between slides
     const characterVariants = {
         0: {
             top: '18%',
             left: '50%',
-            scale: 0.22,
+            scale: 0.432,
             opacity: 1,
             x: '-50%',
             y: '-50%',
@@ -110,9 +124,9 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
             y: '-50%',
         },
         2: {
-            top: '85%',
-            left: '12%',
-            scale: 0.14,
+            top: '86%',
+            left: '10%',
+            scale: 0.33,
             opacity: 1,
             x: '-50%',
             y: '-50%',
@@ -130,11 +144,10 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
     const getActiveVariant = () => {
         if (currentSection === 0) return characterVariants[0];
         if (currentSection === 1) return characterVariants[1];
-        if (currentSection === 2) return characterVariants[2];
-        return characterVariants.default;
+        return characterVariants[2];
     };
 
-    return (
+        return (
         <div className="relative h-screen w-screen overflow-hidden bg-[#F9E0A4]">
             {/* Moving Characters Overlay */}
             <div className="absolute inset-0 pointer-events-none z-[500]">
@@ -144,11 +157,18 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
                     transition={{ type: 'spring', damping: 25, stiffness: 80 }}
                     className="absolute"
                 >
-                    <img
-                        src="/Brand/animacion.svg"
-                        alt="Personajes Pandilla"
-                        className="w-[90vw] max-w-[900px] h-auto origin-bottom-left"
-                    />
+                    <div className="relative w-[99vw] max-w-[990px] aspect-[1080/470] origin-bottom-left">
+                        {animationFrames.map((frame, index) => (
+                            <img
+                                key={frame}
+                                src={frame}
+                                alt="Personajes Pandilla"
+                                className={`absolute inset-0 w-full h-full object-fill ${
+                                    index === frameIndex ? 'opacity-100' : 'opacity-0'
+                                }`}
+                            />
+                        ))}
+                    </div>
                 </motion.div>
             </div>
 
@@ -160,12 +180,14 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
             >
                 {children.map((child, index) => (
                     <div key={index} className="min-w-[100vw] h-full flex items-center justify-center relative overflow-hidden">
-                        {child}
+                        {React.isValidElement(child)
+                            ? React.cloneElement(child as React.ReactElement<any>, {
+                                isActive: index === currentSection,
+                            })
+                            : child}
                     </div>
                 ))}
             </div>
         </div>
     );
 }
-
-

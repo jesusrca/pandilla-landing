@@ -4,6 +4,23 @@
   font-family: 'Denton';
   src: url('/Fonts-2/DentonCondensedTest-Light.otf') format('opentype');
   font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Denton';
+  src: url('/Fonts-2/DentonCondensedTest-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Denton';
+  src: url('/Fonts-2/DentonCondensedTest-RegularItalic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
   font-display: swap;
 }
 

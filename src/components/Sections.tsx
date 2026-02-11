@@ -1,8 +1,18 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 export function HeroSection() {
+    const [bearOffset, setBearOffset] = useState(0);
+
+    useEffect(() => {
+        const interval = window.setInterval(() => {
+            const next = Math.floor(Math.random() * 13) - 6; // -6..6 px
+            setBearOffset(next);
+        }, 900);
+        return () => window.clearInterval(interval);
+    }, []);
+
     return (
         <div className="w-full h-full flex flex-col items-center justify-start bg-[#F9E0A4] relative p-8 pt-[15vh]">
             {/* Space for characters overlay */}
@@ -15,7 +25,10 @@ export function HeroSection() {
                     Taller de Sanguchitos
                 </h2>
 
-                <div>
+                <div
+                    style={{ transform: `translateX(${bearOffset}px)` }}
+                    className="transition-transform duration-700 ease-out"
+                >
                     <img src="/Brand/age-pandilla.svg" alt="EST 2024" className="w-[28vw] max-w-[180px] h-auto" />
                 </div>
             </div>
@@ -36,20 +49,15 @@ export function HeroSection() {
     );
 }
 
-export function CharacterSection() {
+export function CharacterSection({ isActive = false }: { isActive?: boolean }) {
     return (
-        <div className="w-full h-full relative overflow-hidden">
-            {/* Capa de fondo base */}
-            <div className="absolute inset-0 bg-[#f9e0a4] z-0" />
-
-            {/* Capa de la trama (encima del color, debajo de los personajes) */}
-            <div className="absolute inset-0 z-10 pointer-events-none">
-                <img
-                    src="/content/Trama.svg"
-                    alt="Pattern"
-                    className="w-full h-full object-cover"
-                />
-            </div>
+        <div className="w-full h-full relative overflow-hidden bg-[#f9e0a4]">
+            <img
+                src="/content/fondo-slide2.svg"
+                alt="Fondo Slide 2"
+                className={`absolute inset-0 w-full h-full object-cover pointer-events-none scale-[1.08] -translate-y-[6%] origin-top transition-opacity duration-700 ease-out ${isActive ? 'opacity-100' : 'opacity-0'
+                    }`}
+            />
         </div>
     );
 }
