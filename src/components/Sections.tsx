@@ -15,6 +15,14 @@ export function HeroSection() {
                 <img src="/Brand/age-pandilla.svg" alt="EST 2024" className="w-[32vw] max-w-[215px] min-w-[140px] h-auto" />
             </div>
 
+            <div className="absolute bottom-[22%] left-1/2 -translate-x-1/2 md:hidden pointer-events-none">
+                <img
+                    src="/content/swipe.svg"
+                    alt="Swipe hint"
+                    className="w-[56px] h-auto animate-swipe-hint opacity-50"
+                />
+            </div>
+
             {/* Footer Info */}
             <div className="absolute bottom-12 left-0 w-full px-12 flex flex-col md:flex-row justify-between items-center font-mono text-xl text-brand-brown gap-4">
                 <div className="text-center md:text-left">
@@ -54,7 +62,9 @@ export function CharacterSection({ isActive = false }: { isActive?: boolean }) {
 
 export function PowerSection() {
     const [carouselIndex, setCarouselIndex] = useState(0);
+    const [mobileCarouselIndex, setMobileCarouselIndex] = useState(0);
     const lastWheelAtRef = useRef(0);
+    const mobileTouchStartY = useRef(0);
     const powerCarouselImages = [
         '/content/slide-carrusel.jpg',
         '/content/slide-carrusel2.jpg',
@@ -62,6 +72,7 @@ export function PowerSection() {
         '/content/slide-carrusel4.jpg',
         '/content/slide-carrusel5.jpg',
     ];
+    const mobileCarouselImages = ['/content/Group 1.png', ...powerCarouselImages];
 
     const stepCarousel = (direction: 1 | -1) => {
         setCarouselIndex((prev) => {
@@ -90,9 +101,55 @@ export function PowerSection() {
         }
     };
 
+    const stepMobileCarousel = (direction: 1 | -1) => {
+        setMobileCarouselIndex((prev) => {
+            const next = prev + direction;
+            if (next < 0) return 0;
+            if (next >= mobileCarouselImages.length) return mobileCarouselImages.length - 1;
+            return next;
+        });
+    };
+
+    const handleMobileTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+        mobileTouchStartY.current = e.changedTouches[0].clientY;
+    };
+
+    const handleMobileTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+        const touchEndY = e.changedTouches[0].clientY;
+        const diffY = mobileTouchStartY.current - touchEndY;
+        if (Math.abs(diffY) < 45) return;
+
+        if (diffY > 0) {
+            stepMobileCarousel(1);
+        } else {
+            stepMobileCarousel(-1);
+        }
+    };
+
     return (
         <div className="w-full h-full bg-[#F9E0A4]">
-            <div className="h-full w-full grid grid-cols-1 md:grid-cols-2">
+            <div
+                className="md:hidden h-full w-full overflow-hidden relative"
+                onTouchStart={handleMobileTouchStart}
+                onTouchEnd={handleMobileTouchEnd}
+                style={{ touchAction: 'pan-y' }}
+            >
+                <div
+                    className="flex flex-col h-full w-full transition-transform duration-700 ease-in-out"
+                    style={{ transform: `translateY(-${mobileCarouselIndex * 100}%)` }}
+                >
+                    {mobileCarouselImages.map((image) => (
+                        <img
+                            key={image}
+                            src={image}
+                            alt="Pandilla slide"
+                            className="block h-full w-full object-cover"
+                        />
+                    ))}
+                </div>
+            </div>
+
+            <div className="hidden md:grid h-full w-full grid-cols-2">
                 <div className="h-full w-full">
                     <img
                         src="/content/Group 1.png"

@@ -87,11 +87,21 @@ function RowItem({
 
 export default function MenuSection() {
     const [hoveredItem, setHoveredItem] = useState<MenuItem | null>(null);
+    const [openMobileItem, setOpenMobileItem] = useState<string | null>(null);
     const pairedRows = menuData.leftColumn.slice(0, 3).map((leftItem, index) => ({
         left: leftItem,
         right: menuData.rightColumn[index],
     }));
     const lastLeft = menuData.leftColumn[3]!;
+    const mobileMenuItems: MenuItem[] = [
+        menuData.leftColumn[0]!,
+        menuData.rightColumn[0]!,
+        menuData.leftColumn[1]!,
+        menuData.rightColumn[1]!,
+        menuData.leftColumn[2]!,
+        menuData.rightColumn[2]!,
+        lastLeft,
+    ];
     const previewOffsets: Record<string, string> = {
         'Roast Beef': '-translate-x-[54%] -translate-y-[52%]',
         'Rubén': '-translate-x-[48%] -translate-y-[49%]',
@@ -121,7 +131,86 @@ export default function MenuSection() {
                     </div>
                 </div>
             )}
-            <div className="w-full h-full max-w-[1800px] flex flex-col relative py-6 md:py-8 -translate-y-[2%]">
+            <div className="md:hidden w-full h-full overflow-y-auto px-4 pt-16 pb-24" style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}>
+                <div className="relative mb-5 border-b border-[#E35A2A]">
+                    <h1 className="font-display font-normal italic text-[2.5rem] leading-none text-brand-brown text-right pb-1">
+                        Sanguchitos
+                    </h1>
+                </div>
+
+                <div className="space-y-1">
+                    {mobileMenuItems.map((item) => {
+                        const isOpen = openMobileItem === item.title;
+                        return (
+                            <div key={item.title} className="border-b border-[#7A3E2B]">
+                                <button
+                                    type="button"
+                                    onClick={() => setOpenMobileItem(isOpen ? null : item.title)}
+                                    className="w-full text-left font-display font-normal text-[2.8rem] leading-none text-brand-brown py-2"
+                                >
+                                    {item.title}
+                                </button>
+                                <div
+                                    className={`grid transition-[grid-template-rows,opacity,margin] duration-300 ease-out ${
+                                        isOpen ? 'grid-rows-[1fr] opacity-100 mt-1' : 'grid-rows-[0fr] opacity-0 mt-0'
+                                    }`}
+                                >
+                                    <div className="overflow-hidden">
+                                        <div
+                                            className={`pb-3 transition-transform duration-300 ease-out ${
+                                                isOpen ? 'translate-y-0' : '-translate-y-1'
+                                            }`}
+                                        >
+                                            <img
+                                                src={item.image}
+                                                alt={item.title}
+                                                className="w-full h-[160px] object-cover rounded-[8px] mb-2"
+                                            />
+                                            <p className="font-mono text-[18px] leading-[1.22] text-brand-brown/90 uppercase">
+                                                {item.description}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                <div className="mt-6 bg-white/72 border border-[#E9E5DB] px-4 py-4">
+                    <h3 className="font-mono text-[18px] text-brand-brown uppercase text-right pb-2">
+                        BEBIDAS & SNACKS
+                    </h3>
+                    <div className="space-y-1">
+                        {drinks.slice(0, 3).map((drink) => (
+                            <div
+                                key={drink.name}
+                                className="w-full border-b border-brand-brown/60"
+                                style={{ borderBottomStyle: 'dotted' }}
+                            >
+                                <div className="grid grid-cols-2 items-start py-[3px]">
+                                    <span className="font-mono text-[18px] leading-[1.15] text-brand-brown uppercase">
+                                        {drink.name}
+                                    </span>
+                                    <span className="font-mono text-[18px] leading-[1.15] text-brand-brown uppercase text-left">
+                                        {drink.pair}
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
+                        <div className="grid grid-cols-2 items-start pt-4">
+                            <span className="font-mono text-[18px] leading-[1.15] text-brand-brown uppercase">
+                                CHIPS TIYAPUY
+                            </span>
+                            <span className="font-mono text-[18px] leading-[1.15] text-brand-brown uppercase text-left">
+                                COOKIE REPUBLIC
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="hidden md:flex w-full h-full max-w-[1800px] flex-col relative py-6 md:py-8 -translate-y-[2%]">
 
                 {/* Header - Top Right */}
                 <div className="relative mb-8 md:mb-10 pt-24 md:pt-28 border-b-2 border-[#E35A2A]">

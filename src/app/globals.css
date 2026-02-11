@@ -253,6 +253,18 @@
   }
 }
 
+@keyframes swipeHintLR {
+  0%,
+  100% {
+    transform: translateX(-14px);
+    opacity: 0.28;
+  }
+  50% {
+    transform: translateX(14px);
+    opacity: 0.55;
+  }
+}
+
 :root {
   --background: #F9E0A4;
   --foreground: #75391C;
@@ -301,5 +313,9 @@ body {
   .menu-preview-float {
     animation: menuPreviewFloat 4.2s ease-in-out infinite;
     will-change: transform;
+  }
+  .animate-swipe-hint {
+    animation: swipeHintLR 1.35s ease-in-out infinite;
+    will-change: transform, opacity;
   }
 }
