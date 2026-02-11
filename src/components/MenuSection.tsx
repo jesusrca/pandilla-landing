@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 type MenuItem = {
     title: string;
@@ -60,13 +60,19 @@ const drinks = [
 function RowItem({
     item,
     onTitleHover,
+    compact = false,
 }: {
     item: MenuItem;
     onTitleHover: (item: MenuItem | null) => void;
+    compact?: boolean;
 }) {
     return (
         <div
-            className="grid grid-cols-[238px_1fr] items-end gap-x-[2%] pb-0"
+            className={`grid items-end gap-x-[2%] pb-0 ${
+                compact
+                    ? 'grid-cols-[minmax(188px,220px)_1fr] lg:grid-cols-[minmax(200px,232px)_1fr]'
+                    : 'grid-cols-[238px_1fr]'
+            }`}
             onMouseEnter={() => onTitleHover(item)}
             onMouseLeave={() => onTitleHover(null)}
             onFocusCapture={() => onTitleHover(item)}
@@ -74,11 +80,19 @@ function RowItem({
         >
             <button
                 type="button"
-                className="font-display font-normal text-5xl text-brand-brown whitespace-nowrap leading-none -mb-[6px] text-left bg-transparent border-0 p-0 cursor-pointer"
+                className={`font-display font-normal text-brand-brown whitespace-nowrap leading-none text-left bg-transparent border-0 p-0 cursor-pointer ${
+                    compact ? 'text-[clamp(2.35rem,2.8vw,2.9rem)] -mb-[4px]' : 'text-5xl -mb-[6px]'
+                }`}
             >
                 {item.title}
             </button>
-            <p className="font-mono text-x1 text-brand-brown/90 uppercase hidden lg:block leading-[1.2] mt-0 -mb-[2px]">
+            <p
+                className={`font-mono text-brand-brown/90 uppercase hidden lg:block mt-0 ${
+                    compact
+                        ? 'text-[clamp(0.95rem,1.06vw,1.08rem)] leading-[1.08] -mb-[1px]'
+                        : 'text-x1 leading-[1.2] -mb-[2px]'
+                }`}
+            >
                 {item.description}
             </p>
         </div>
@@ -88,6 +102,7 @@ function RowItem({
 export default function MenuSection() {
     const [hoveredItem, setHoveredItem] = useState<MenuItem | null>(null);
     const [openMobileItem, setOpenMobileItem] = useState<string | null>(null);
+    const [isCompactDesktop, setIsCompactDesktop] = useState(false);
     const pairedRows = menuData.leftColumn.slice(0, 3).map((leftItem, index) => ({
         left: leftItem,
         right: menuData.rightColumn[index],
@@ -112,6 +127,19 @@ export default function MenuSection() {
         'Italian Deli': '-translate-x-[50%] -translate-y-[50%]',
     };
     const previewOffsetClass = hoveredItem ? previewOffsets[hoveredItem.title] ?? '-translate-x-1/2 -translate-y-1/2' : '-translate-x-1/2 -translate-y-1/2';
+    const previewSizeClass = isCompactDesktop ? 'w-[min(27vw,33vh,360px)]' : 'w-[min(34vw,460px)]';
+    const rowHeightClass = isCompactDesktop ? 'min-h-[70px] lg:min-h-[82px]' : 'min-h-[76px] md:min-h-[104px]';
+    const lastRowHeightClass = isCompactDesktop ? 'min-h-[260px] lg:min-h-[300px]' : 'min-h-[360px] md:min-h-[410px]';
+    const lastRowLineTopClass = isCompactDesktop ? 'top-[86px] lg:top-[98px]' : 'top-[102px] md:top-[120px]';
+
+    useEffect(() => {
+        const checkCompact = () => {
+            setIsCompactDesktop(window.innerWidth >= 768 && window.innerWidth < 1400);
+        };
+        checkCompact();
+        window.addEventListener('resize', checkCompact);
+        return () => window.removeEventListener('resize', checkCompact);
+    }, []);
 
     return (
         <section className="section bg-[#F9E0A4] relative overflow-hidden h-screen w-screen flex items-center justify-center px-2 md:px-3">
@@ -119,7 +147,7 @@ export default function MenuSection() {
                 <div className="pointer-events-none absolute inset-0 z-40 hidden md:flex items-center justify-center">
                     <div
                         key={hoveredItem.title}
-                        className={`absolute left-1/2 top-1/2 w-[min(34vw,460px)] aspect-[4/5] ${previewOffsetClass} animate-[fadeIn_240ms_ease-out]`}
+                        className={`absolute left-1/2 top-1/2 ${previewSizeClass} aspect-[4/5] ${previewOffsetClass} animate-[fadeIn_240ms_ease-out]`}
                     >
                         <div className="w-full h-full menu-preview-float">
                             <img
@@ -210,68 +238,68 @@ export default function MenuSection() {
                 </div>
             </div>
 
-            <div className="hidden md:flex w-full h-full max-w-[1800px] flex-col relative py-6 md:py-8 -translate-y-[2%]">
+            <div className={`hidden md:flex w-full h-full max-w-[1800px] flex-col relative ${isCompactDesktop ? 'py-1' : 'py-6 md:py-8'} -translate-y-[2%]`}>
 
                 {/* Header - Top Right */}
-                <div className="relative mb-8 md:mb-10 pt-24 md:pt-28 border-b-2 border-[#E35A2A]">
-                    <h1 className="absolute right-0 -bottom-1 font-display font-normal italic text-5x1 text-brand-brown whitespace-nowrap leading-none">
+                <div className={`relative border-b-2 border-[#E35A2A] ${isCompactDesktop ? 'mb-5 pt-16 lg:pt-20' : 'mb-8 md:mb-10 pt-24 md:pt-28'}`}>
+                    <h1 className={`absolute right-0 font-display font-normal italic text-brand-brown whitespace-nowrap leading-none ${isCompactDesktop ? '-bottom-0.5 text-[clamp(2.55rem,3.2vw,3.05rem)]' : '-bottom-1 text-5x1'}`}>
                         Sanguchitos
                     </h1>
                 </div>
 
-                <div className="flex flex-col flex-1 items-stretch gap-y-2 md:gap-y-3">
+                <div className={`flex flex-col flex-1 items-stretch ${isCompactDesktop ? 'gap-y-1.5' : 'gap-y-2 md:gap-y-3'}`}>
                     {pairedRows.map((row) => (
                         <div
                             key={row.left.title}
-                            className="relative grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-24 min-h-[76px] md:min-h-[104px] items-end"
+                            className={`relative grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-24 ${rowHeightClass} items-end`}
                         >
-                            <RowItem item={row.left} onTitleHover={setHoveredItem} />
-                            <RowItem item={row.right} onTitleHover={setHoveredItem} />
+                            <RowItem item={row.left} onTitleHover={setHoveredItem} compact={isCompactDesktop} />
+                            <RowItem item={row.right} onTitleHover={setHoveredItem} compact={isCompactDesktop} />
                             <div className="absolute left-0 right-0 bottom-0 h-px bg-[#7A3E2B] z-30" />
                         </div>
                     ))}
 
-                    <div className="relative grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-24 min-h-[360px] md:min-h-[410px]">
-                        <div className="pt-8 md:pt-10">
-                            <RowItem item={lastLeft} onTitleHover={setHoveredItem} />
+                    <div className={`relative grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-24 ${lastRowHeightClass}`}>
+                        <div className={isCompactDesktop ? 'pt-3 lg:pt-4' : 'pt-8 md:pt-10'}>
+                            <RowItem item={lastLeft} onTitleHover={setHoveredItem} compact={isCompactDesktop} />
                         </div>
-                        <div className="pt-10 md:pt-11">
-                            <div className="bg-white/80 border border-[#E9E5DB] relative z-10 px-5 py-6 md:px-8 md:py-7 backdrop-blur-[2px] translate-y-[10%]">
+                        <div className={isCompactDesktop ? 'pt-4 lg:pt-5' : 'pt-10 md:pt-11'}>
+                            <div className={`bg-white/80 border border-[#E9E5DB] relative z-10 backdrop-blur-[2px] ${isCompactDesktop ? 'px-4 py-3 lg:px-6 lg:py-4 translate-y-[4%]' : 'px-5 py-6 md:px-8 md:py-7 translate-y-[10%]'}`}>
                                 <div className="flex justify-end">
-                                    <h3 className="font-mono text-x1 text-brand-brown uppercase pb-1">
+                                    <h3 className={`font-mono text-brand-brown uppercase ${isCompactDesktop ? 'text-[clamp(0.95rem,1.05vw,1.08rem)] pb-0.5' : 'text-x1 pb-1'}`}>
                                         BEBIDAS & SNACKS
                                     </h3>
                                 </div>
-                                <div className="mt-2 space-y-1">
+                                <div className={isCompactDesktop ? 'mt-1.5 space-y-0.5' : 'mt-2 space-y-1'}>
                                     {drinks.slice(0, 3).map((drink, i) => (
                                         <div
                                             key={i}
                                             className="w-full border-b-2 border-brand-brown/60 last:border-b-0"
                                             style={{ borderBottomStyle: 'dotted' }}
                                         >
-                                            <div className="grid grid-cols-2 items-center py-[2px] px-1">
-                                                <span className="font-mono text-x1 text-brand-brown uppercase">
+                                            <div className={`grid grid-cols-2 items-center ${isCompactDesktop ? 'py-[1px] px-0.5' : 'py-[2px] px-1'}`}>
+                                                <span className={`font-mono text-brand-brown uppercase ${isCompactDesktop ? 'text-[clamp(0.95rem,1.05vw,1.08rem)]' : 'text-x1'}`}>
                                                     {drink.name}
                                                 </span>
-                                                <span className="font-mono text-x1 text-brand-brown uppercase">
+                                                <span className={`font-mono text-brand-brown uppercase ${isCompactDesktop ? 'text-[clamp(0.95rem,1.05vw,1.08rem)]' : 'text-x1'}`}>
                                                     {drink.pair}
                                                 </span>
                                             </div>
                                         </div>
                                     ))}
-                                    <div className="grid grid-cols-2 items-center pt-5">
-                                        <span className="font-mono text-x1 text-brand-brown uppercase">
+                                    <div className={`grid grid-cols-2 items-center ${isCompactDesktop ? 'pt-3' : 'pt-5'}`}>
+                                        <span className={`font-mono text-brand-brown uppercase ${isCompactDesktop ? 'text-[clamp(0.95rem,1.05vw,1.08rem)]' : 'text-x1'}`}>
                                             CHIPS TIYAPUY
                                         </span>
-                                        <span className="font-mono text-x1 text-brand-brown uppercase">
+                                        <span className={`font-mono text-brand-brown uppercase ${isCompactDesktop ? 'text-[clamp(0.95rem,1.05vw,1.08rem)]' : 'text-x1'}`}>
                                             COOKIE REPUBLIC
                                         </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="absolute left-0 right-0 top-[102px] md:top-[120px] h-px bg-[#7A3E2B] z-30" />
-                        <div className="hidden md:block absolute md:left-[calc(50%+1.5rem)] lg:left-[calc(50%+3rem)] right-0 top-[102px] md:top-[120px] h-px bg-[#E35A2A] z-40" />
+                        <div className={`absolute left-0 right-0 ${lastRowLineTopClass} h-px bg-[#7A3E2B] z-30`} />
+                        <div className={`hidden md:block absolute md:left-[calc(50%+1.5rem)] lg:left-[calc(50%+3rem)] right-0 ${lastRowLineTopClass} h-px bg-[#E35A2A] z-40`} />
                     </div>
                 </div>
             </div>
