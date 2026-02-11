@@ -128,7 +128,7 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
         2: {
             ...baseVariant,
             top: '89%',
-            left: '11%',
+            left: '9%',
             scale: 0.34,
         },
         default: {
@@ -143,17 +143,22 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
     const getActiveVariant = () => {
         if (currentSection === 0) return characterVariants[0];
         if (currentSection === 1) return characterVariants[1];
-        return characterVariants[2];
+        if (currentSection === 2) return characterVariants[2];
+        return characterVariants.default;
     };
+
+    const characterTransition = currentSection >= 3
+        ? { duration: 0 }
+        : { type: 'spring' as const, damping: 35, stiffness: 60 };
 
         return (
         <div className="relative h-screen w-screen overflow-hidden bg-[#F9E0A4]">
             {/* Moving Characters Overlay */}
-            <div className="absolute inset-0 pointer-events-none z-[500]">
+            <div className={`absolute inset-0 pointer-events-none z-[500] ${currentSection >= 3 ? 'hidden' : ''}`}>
             <motion.div
                 initial={characterVariants[0]}
                 animate={getActiveVariant()}
-                transition={{ type: 'spring', damping: 35, stiffness: 60 }}
+                transition={characterTransition}
                 className="absolute"
             >
                 <div className="relative w-[99vw] max-w-[1100px] aspect-[1080/470] origin-bottom-left scale-[1.1]">

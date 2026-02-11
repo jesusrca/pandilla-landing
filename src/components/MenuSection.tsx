@@ -59,11 +59,11 @@ export default function MenuSection() {
     const lastLeft = menuData.leftColumn[3]!;
 
     const RowItem = ({ item }: { item: { title: string; description: string } }) => (
-        <div className="grid grid-cols-[238px_1fr] items-end gap-x-[2%] pb-[1px]">
-            <h2 className="font-display font-normal text-5xl text-brand-brown whitespace-nowrap leading-none">
+        <div className="grid grid-cols-[238px_1fr] items-end gap-x-[2%] pb-0">
+            <h2 className="font-display font-normal text-5xl text-brand-brown whitespace-nowrap leading-none -mb-[6px]">
                 {item.title}
             </h2>
-            <p className="font-mono text-x1 text-brand-brown/90 uppercase hidden lg:block leading-[1.2] mt-0">
+            <p className="font-mono text-x1 text-brand-brown/90 uppercase hidden lg:block leading-[1.2] mt-0 -mb-[2px]">
                 {item.description}
             </p>
         </div>
@@ -71,7 +71,7 @@ export default function MenuSection() {
 
     return (
         <section className="section bg-[#F9E0A4] relative overflow-hidden h-screen w-screen flex items-center justify-center px-2 md:px-3">
-            <div className="w-full h-full max-w-[1800px] flex flex-col relative py-6 md:py-8">
+            <div className="w-full h-full max-w-[1800px] flex flex-col relative py-6 md:py-8 -translate-y-[2%]">
 
                 {/* Header - Top Right */}
                 <div className="relative mb-8 md:mb-10 pt-24 md:pt-28 border-b-2 border-[#E35A2A]">
@@ -80,11 +80,11 @@ export default function MenuSection() {
                     </h1>
                 </div>
 
-                <div className="flex flex-col flex-1 items-stretch">
+                <div className="flex flex-col flex-1 items-stretch gap-y-2 md:gap-y-3">
                     {pairedRows.map((row) => (
                         <div
                             key={row.left.title}
-                            className="relative grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-24 min-h-[80px] md:min-h-[110px] items-end"
+                            className="relative grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-24 min-h-[76px] md:min-h-[104px] items-end"
                         >
                             <RowItem item={row.left} />
                             <RowItem item={row.right} />
@@ -96,20 +96,21 @@ export default function MenuSection() {
                         <div className="pt-8 md:pt-10">
                             <RowItem item={lastLeft} />
                         </div>
-                        <div className="pt-5 md:pt-6">
-                            <div className="bg-white/90 border border-[#E9E5DB] relative z-10 px-5 py-6 md:px-8 md:py-7 shadow-[0_12px_30px_rgba(0,0,0,0.08)] backdrop-blur-[2px]">
+                        <div className="pt-10 md:pt-11">
+                            <div className="bg-white/80 border border-[#E9E5DB] relative z-10 px-5 py-6 md:px-8 md:py-7 backdrop-blur-[2px] translate-y-[10%]">
                                 <div className="flex justify-end">
                                     <h3 className="font-mono text-x1 text-brand-brown uppercase pb-1">
                                         BEBIDAS & SNACKS
                                     </h3>
                                 </div>
-                                <div className="mt-5 space-y-1">
+                                <div className="mt-2 space-y-1">
                                     {drinks.slice(0, 3).map((drink, i) => (
                                         <div
                                             key={i}
-                                            className="w-full border-b border-dotted border-brand-brown/60 last:border-b-0"
+                                            className="w-full border-b-2 border-brand-brown/60 last:border-b-0"
+                                            style={{ borderBottomStyle: 'dotted' }}
                                         >
-                                            <div className="flex justify-between items-center py-1 px-1">
+                                            <div className="grid grid-cols-2 items-center py-[2px] px-1">
                                                 <span className="font-mono text-x1 text-brand-brown uppercase">
                                                     {drink.name}
                                                 </span>
@@ -119,7 +120,7 @@ export default function MenuSection() {
                                             </div>
                                         </div>
                                     ))}
-                                    <div className="flex justify-between items-center pt-5">
+                                    <div className="grid grid-cols-2 items-center pt-5">
                                         <span className="font-mono text-x1 text-brand-brown uppercase">
                                             CHIPS TIYAPUY
                                         </span>
@@ -130,7 +131,7 @@ export default function MenuSection() {
                                 </div>
                             </div>
                         </div>
-                        <div className="absolute left-0 right-0 top-[112px] md:top-[130px] h-px bg-[#7A3E2B] z-30" />
+                        <div className="absolute left-0 right-0 top-[102px] md:top-[120px] h-px bg-[#7A3E2B] z-30" />
                     </div>
                 </div>
             </div>
