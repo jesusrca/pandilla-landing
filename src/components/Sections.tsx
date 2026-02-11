@@ -178,8 +178,8 @@ export function PowerSection() {
 
                 <div className="absolute bottom-[6.5%] left-1/2 -translate-x-1/2 pointer-events-none">
                     <img
-                        src="/content/Swipe-down.svg"
-                        alt="Swipe down hint"
+                        src="/content/Swipe-up.svg"
+                        alt="Swipe up hint"
                         className="w-[46px] h-auto animate-swipe-down-hint"
                     />
                 </div>

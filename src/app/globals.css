@@ -278,23 +278,23 @@
 
 @keyframes swipeHintDown {
   0% {
-    transform: translateY(-10px);
+    transform: translateY(12px);
     opacity: 0;
   }
   14% {
-    transform: translateY(-8px);
+    transform: translateY(10px);
     opacity: 0.42;
   }
   42% {
-    transform: translateY(14px);
+    transform: translateY(-12px);
     opacity: 0.55;
   }
   56% {
-    transform: translateY(16px);
+    transform: translateY(-14px);
     opacity: 0;
   }
   100% {
-    transform: translateY(16px);
+    transform: translateY(-14px);
     opacity: 0;
   }
 }
