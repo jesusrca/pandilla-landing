@@ -19,6 +19,12 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
         '/content/animacion/pandilla-animacion-03.svg',
         '/content/animacion/pandilla-animacion-04.svg',
     ];
+    const sessionCursors = [
+        '/content/gato-cursor-small.svg',
+        '/content/ave-cursor-small.svg',
+        '/oso-cursor-small.svg',
+    ];
+    const [sessionCursor, setSessionCursor] = useState<string>(sessionCursors[0]);
 
     const goToSection = useCallback((index: number) => {
         if (index < 0 || index >= children.length || index === currentSection || isScrolling) return;
@@ -105,6 +111,10 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
         return () => window.clearInterval(interval);
     }, [animationFrames.length]);
 
+    useEffect(() => {
+        setSessionCursor(sessionCursors[Math.floor(Math.random() * sessionCursors.length)]);
+    }, []);
+
     // Character variants for animation between slides
     const baseVariant = {
         scale: 0.6,
@@ -144,17 +154,19 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
         if (currentSection === 0) return characterVariants[0];
         if (currentSection === 1) return characterVariants[1];
         if (currentSection === 2) return characterVariants[2];
-        return characterVariants.default;
+        return { ...characterVariants[2], opacity: 0 };
     };
 
     const characterTransition = currentSection >= 3
-        ? { duration: 0 }
+        ? { duration: 0.45, ease: 'easeOut' as const }
         : { type: 'spring' as const, damping: 35, stiffness: 60 };
 
+    const activeCursor = `url('${sessionCursor}') 10 10, auto`;
+
         return (
-        <div className="relative h-screen w-screen overflow-hidden bg-[#F9E0A4]">
+        <div className="relative h-screen w-screen overflow-hidden bg-[#F9E0A4]" style={{ cursor: activeCursor }}>
             {/* Moving Characters Overlay */}
-            <div className={`absolute inset-0 pointer-events-none z-[500] ${currentSection >= 3 ? 'hidden' : ''}`}>
+            <div className="absolute inset-0 pointer-events-none z-[500]">
             <motion.div
                 initial={characterVariants[0]}
                 animate={getActiveVariant()}

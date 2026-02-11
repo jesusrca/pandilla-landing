@@ -1,18 +1,28 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export function HeroSection() {
-    const [bearOffset, setBearOffset] = useState(0);
+    const [bearOffsetX, setBearOffsetX] = useState(0);
+    const [bearOffsetY, setBearOffsetY] = useState(0);
     const [bearRotation, setBearRotation] = useState(0);
 
     useEffect(() => {
         const interval = window.setInterval(() => {
-            const offset = Math.floor(Math.random() * 21) - 10; // -10..10 px
-            const rotation = (Math.random() * 6) - 3; // -3..3 deg
-            setBearOffset(offset);
+            const shouldMove = Math.random() < 0.35;
+            if (!shouldMove) {
+                setBearOffsetX(0);
+                setBearOffsetY(0);
+                setBearRotation(0);
+                return;
+            }
+            const offsetX = Math.floor(Math.random() * 5) - 2; // -2..2 px
+            const offsetY = Math.floor(Math.random() * 5) - 2; // -2..2 px
+            const rotation = (Math.random() * 4) - 2; // -2..2 deg
+            setBearOffsetX(offsetX);
+            setBearOffsetY(offsetY);
             setBearRotation(rotation);
-        }, 900);
+        }, 2200);
         return () => window.clearInterval(interval);
     }, []);
 
@@ -25,16 +35,19 @@ export function HeroSection() {
                     Taller de Sanguchitos
                 </h2>
 
-                <div
-                    style={{ transform: `translateX(${bearOffset}px) rotate(${bearRotation}deg)` }}
-                    className="transition-transform duration-700 ease-out will-change-transform"
-                >
-                    <img src="/Brand/age-pandilla.svg" alt="EST 2024" className="w-[28vw] max-w-[180px] h-auto" />
+                <div className="relative w-[32vw] max-w-[215px] min-w-[140px]">
+                    <img src="/content/est-age.svg" alt="EST 2024" className="w-full h-auto" />
+                    <img
+                        src="/oso.svg"
+                        alt="Oso Pandilla"
+                        className="absolute left-[50%] top-[50%] w-[18%] h-auto transition-transform duration-900 ease-out will-change-transform"
+                        style={{ transform: `translate(-50%, -50%) translate(${bearOffsetX}px, ${bearOffsetY}px) rotate(${bearRotation}deg)` }}
+                    />
                 </div>
             </div>
 
             {/* Footer Info */}
-            <div className="absolute bottom-12 left-0 w-full px-12 flex flex-col md:flex-row justify-between items-center font-mono text-[11px] md:text-[13px] text-brand-brown tracking-[0.2em] gap-4">
+            <div className="absolute bottom-12 left-0 w-full px-12 flex flex-col md:flex-row justify-between items-center font-mono text-xl text-brand-brown gap-4">
                 <div className="text-center md:text-left">
                     ELÍAS AGUIRRE 277, MIRAFLORES
                 </div>
@@ -63,10 +76,69 @@ export function CharacterSection({ isActive = false }: { isActive?: boolean }) {
 }
 
 export function PowerSection() {
+    const [carouselIndex, setCarouselIndex] = useState(0);
+    const lastWheelAtRef = useRef(0);
+    const powerCarouselImages = [
+        '/content/slide-carrusel.jpg',
+        '/content/slide-carrusel2.jpg',
+        '/content/slide-carrusel3.jpg',
+        '/content/slide-carrusel4.jpg',
+        '/content/slide-carrusel5.jpg',
+    ];
+
+    const stepCarousel = (direction: 1 | -1) => {
+        setCarouselIndex((prev) => {
+            const next = prev + direction;
+            if (next < 0) return 0;
+            if (next >= powerCarouselImages.length) return powerCarouselImages.length - 1;
+            return next;
+        });
+    };
+
+    const handleCarouselWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+        const now = Date.now();
+        if (now - lastWheelAtRef.current < 320) return;
+        lastWheelAtRef.current = now;
+
+        if (e.deltaY > 0) {
+            if (carouselIndex >= powerCarouselImages.length - 1) return;
+            e.preventDefault();
+            e.stopPropagation();
+            stepCarousel(1);
+        } else if (e.deltaY < 0) {
+            if (carouselIndex <= 0) return;
+            e.preventDefault();
+            e.stopPropagation();
+            stepCarousel(-1);
+        }
+    };
+
     return (
-        <div className="w-full h-full flex items-center justify-center bg-[#F9E0A4] p-8">
-            <div className="w-[90vw] max-w-[600px] animate-rotateIn">
-                <img src="/content/Group 1.png" alt="The Power of Pandilla" className="w-full h-auto rounded-[20px] shadow-3xl transition-transform duration-300 hover:scale-105 hover:-rotate-2" />
+        <div className="w-full h-full bg-[#F9E0A4]">
+            <div className="h-full w-full grid grid-cols-1 md:grid-cols-2">
+                <div className="h-full w-full">
+                    <img
+                        src="/content/Group 1.png"
+                        alt="The Power of Pandilla"
+                        className="h-full w-full object-cover"
+                    />
+                </div>
+
+                <div className="hidden md:block h-full w-full overflow-hidden" onWheel={handleCarouselWheel}>
+                    <div
+                        className="flex flex-col h-full w-full transition-transform duration-700 ease-in-out"
+                        style={{ transform: `translateY(-${carouselIndex * 100}%)` }}
+                    >
+                        {powerCarouselImages.map((image) => (
+                            <img
+                                key={image}
+                                src={image}
+                                alt="Pandilla slide"
+                                className="block h-full w-full object-cover"
+                            />
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
     );
