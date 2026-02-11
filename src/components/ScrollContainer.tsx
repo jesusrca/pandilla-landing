@@ -101,43 +101,42 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
     useEffect(() => {
         const interval = window.setInterval(() => {
             setFrameIndex((prev) => (prev + 1) % animationFrames.length);
-        }, 340);
+        }, 520);
         return () => window.clearInterval(interval);
     }, [animationFrames.length]);
 
     // Character variants for animation between slides
+    const baseVariant = {
+        scale: 0.6,
+        opacity: 1,
+        x: '-50%',
+        y: '-50%',
+    };
+
     const characterVariants = {
         0: {
+            ...baseVariant,
             top: '18%',
             left: '50%',
-            scale: 0.432,
-            opacity: 1,
-            x: '-50%',
-            y: '-50%',
+            scale: baseVariant.scale * 0.72,
         },
         1: {
+            ...baseVariant,
             top: '50%',
             left: '50%',
-            scale: 0.8,
-            opacity: 1,
-            x: '-50%',
-            y: '-50%',
         },
         2: {
-            top: '86%',
-            left: '10%',
-            scale: 0.33,
-            opacity: 1,
-            x: '-50%',
-            y: '-50%',
+            ...baseVariant,
+            top: '89%',
+            left: '11%',
+            scale: 0.34,
         },
         default: {
+            ...baseVariant,
             opacity: 0,
             scale: 0.5,
             top: '50%',
             left: '50%',
-            x: '-50%',
-            y: '-50%',
         }
     };
 
@@ -151,25 +150,25 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
         <div className="relative h-screen w-screen overflow-hidden bg-[#F9E0A4]">
             {/* Moving Characters Overlay */}
             <div className="absolute inset-0 pointer-events-none z-[500]">
-                <motion.div
-                    initial={characterVariants[0]}
-                    animate={getActiveVariant()}
-                    transition={{ type: 'spring', damping: 25, stiffness: 80 }}
-                    className="absolute"
-                >
-                    <div className="relative w-[99vw] max-w-[990px] aspect-[1080/470] origin-bottom-left">
-                        {animationFrames.map((frame, index) => (
-                            <img
-                                key={frame}
-                                src={frame}
-                                alt="Personajes Pandilla"
-                                className={`absolute inset-0 w-full h-full object-fill ${
-                                    index === frameIndex ? 'opacity-100' : 'opacity-0'
-                                }`}
-                            />
-                        ))}
-                    </div>
-                </motion.div>
+            <motion.div
+                initial={characterVariants[0]}
+                animate={getActiveVariant()}
+                transition={{ type: 'spring', damping: 35, stiffness: 60 }}
+                className="absolute"
+            >
+                <div className="relative w-[99vw] max-w-[1100px] aspect-[1080/470] origin-bottom-left scale-[1.1]">
+                    {animationFrames.map((frame, index) => (
+                        <img
+                            key={frame}
+                            src={frame}
+                            alt="Personajes Pandilla"
+                            className={`absolute inset-0 w-full h-full object-contain ${
+                                index === frameIndex ? 'opacity-100' : 'opacity-0'
+                            }`}
+                        />
+                    ))}
+                </div>
+            </motion.div>
             </div>
 
             {/* Main Container */}

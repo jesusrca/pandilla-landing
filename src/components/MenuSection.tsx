@@ -59,11 +59,11 @@ export default function MenuSection() {
     const lastLeft = menuData.leftColumn[3]!;
 
     const RowItem = ({ item }: { item: { title: string; description: string } }) => (
-        <div className="grid grid-cols-[280px_1fr] items-end gap-1 md:gap-2 pb-[1px]">
-            <h2 className="font-display font-normal text-5xl text-brand-brown whitespace-nowrap leading-[0.92]">
+        <div className="grid grid-cols-[238px_1fr] items-end gap-x-[2%] pb-[1px]">
+            <h2 className="font-display font-normal text-5xl text-brand-brown whitespace-nowrap leading-none">
                 {item.title}
             </h2>
-            <p className="font-mono text-xl text-brand-brown/90 uppercase tracking-[0.08em] hidden lg:block leading-[1.05]">
+            <p className="font-mono text-x1 text-brand-brown/90 uppercase hidden lg:block leading-[1.2] mt-0">
                 {item.description}
             </p>
         </div>
@@ -75,7 +75,7 @@ export default function MenuSection() {
 
                 {/* Header - Top Right */}
                 <div className="relative mb-8 md:mb-10 pt-24 md:pt-28 border-b-2 border-[#E35A2A]">
-                    <h1 className="absolute right-0 -bottom-1 font-display font-normal italic text-5xl text-brand-brown whitespace-nowrap leading-none">
+                    <h1 className="absolute right-0 -bottom-1 font-display font-normal italic text-5x1 text-brand-brown whitespace-nowrap leading-none">
                         Sanguchitos
                     </h1>
                 </div>
@@ -96,22 +96,36 @@ export default function MenuSection() {
                         <div className="pt-8 md:pt-10">
                             <RowItem item={lastLeft} />
                         </div>
-                        <div className="pt-2 md:pt-3">
-                            <div className="bg-[#F5F3EE] p-6 md:p-8 border border-[#E9E5DB] relative z-10">
-                                <h3 className="font-mono text-xl text-brand-brown mb-6 md:mb-8 tracking-[0.08em] text-right uppercase border-b-2 border-[#E35A2A] pb-1">
-                                    BEBIDAS & SNACKS
-                                </h3>
-                                <div className="grid grid-cols-1 gap-3 md:gap-4 font-mono text-xl text-brand-brown tracking-[0.06em]">
+                        <div className="pt-5 md:pt-6">
+                            <div className="bg-white/90 border border-[#E9E5DB] relative z-10 px-5 py-6 md:px-8 md:py-7 shadow-[0_12px_30px_rgba(0,0,0,0.08)] backdrop-blur-[2px]">
+                                <div className="flex justify-end">
+                                    <h3 className="font-mono text-x1 text-brand-brown uppercase pb-1">
+                                        BEBIDAS & SNACKS
+                                    </h3>
+                                </div>
+                                <div className="mt-5 space-y-1">
                                     {drinks.slice(0, 3).map((drink, i) => (
-                                        <div key={i} className="flex justify-between items-center relative gap-2">
-                                            <span className="bg-transparent z-10 pr-2 whitespace-nowrap">{drink.name}</span>
-                                            <div className="flex-1 border-b border-dotted border-brand-brown/60 h-[8px]" />
-                                            <span className="bg-transparent z-10 pl-2 whitespace-nowrap">{drink.pair}</span>
+                                        <div
+                                            key={i}
+                                            className="w-full border-b border-dotted border-brand-brown/60 last:border-b-0"
+                                        >
+                                            <div className="flex justify-between items-center py-1 px-1">
+                                                <span className="font-mono text-x1 text-brand-brown uppercase">
+                                                    {drink.name}
+                                                </span>
+                                                <span className="font-mono text-x1 text-brand-brown uppercase">
+                                                    {drink.pair}
+                                                </span>
+                                            </div>
                                         </div>
                                     ))}
-                                    <div className="flex justify-between mt-8 md:mt-10 font-bold text-[17px] md:text-[18px]">
-                                        <span className="uppercase tracking-widest">CHIPS TIYAPUY</span>
-                                        <span className="uppercase tracking-widest">COOKIE REPUBLIC</span>
+                                    <div className="flex justify-between items-center pt-5">
+                                        <span className="font-mono text-x1 text-brand-brown uppercase">
+                                            CHIPS TIYAPUY
+                                        </span>
+                                        <span className="font-mono text-x1 text-brand-brown uppercase">
+                                            COOKIE REPUBLIC
+                                        </span>
                                     </div>
                                 </div>
                             </div>

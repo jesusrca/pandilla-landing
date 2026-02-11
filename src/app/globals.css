@@ -193,4 +193,12 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+  .text-5x1 {
+    font-size: 3.4rem;
+    line-height: 1;
+  }
+  .text-x1 {
+    font-size: 20px;
+    line-height: 1.3;
+  }
 }

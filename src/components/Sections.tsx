@@ -4,20 +4,20 @@ import React, { useEffect, useState } from 'react';
 
 export function HeroSection() {
     const [bearOffset, setBearOffset] = useState(0);
+    const [bearRotation, setBearRotation] = useState(0);
 
     useEffect(() => {
         const interval = window.setInterval(() => {
-            const next = Math.floor(Math.random() * 13) - 6; // -6..6 px
-            setBearOffset(next);
+            const offset = Math.floor(Math.random() * 21) - 10; // -10..10 px
+            const rotation = (Math.random() * 6) - 3; // -3..3 deg
+            setBearOffset(offset);
+            setBearRotation(rotation);
         }, 900);
         return () => window.clearInterval(interval);
     }, []);
 
     return (
-        <div className="w-full h-full flex flex-col items-center justify-start bg-[#F9E0A4] relative p-8 pt-[15vh]">
-            {/* Space for characters overlay */}
-            <div className="h-[6vh] shrink-0" />
-
+        <div className="w-full h-full flex flex-col items-center justify-center bg-[#F9E0A4] relative p-8">
             <div className="flex flex-col items-center animate-fadeInUp">
                 <img src="/Brand/logo-pandilla.svg" alt="Pandilla Logo" className="w-[85vw] max-w-[850px] h-auto mb-8" />
 
@@ -26,8 +26,8 @@ export function HeroSection() {
                 </h2>
 
                 <div
-                    style={{ transform: `translateX(${bearOffset}px)` }}
-                    className="transition-transform duration-700 ease-out"
+                    style={{ transform: `translateX(${bearOffset}px) rotate(${bearRotation}deg)` }}
+                    className="transition-transform duration-700 ease-out will-change-transform"
                 >
                     <img src="/Brand/age-pandilla.svg" alt="EST 2024" className="w-[28vw] max-w-[180px] h-auto" />
                 </div>
