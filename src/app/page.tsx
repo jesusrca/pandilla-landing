@@ -4,9 +4,7 @@ import {
   HeroSection,
   CharacterSection,
   PowerSection,
-  TeamSection,
-  DeliciousSection,
-  FinalSection
+  DeliciousSection
 } from '@/components/Sections';
 
 export default function Home() {
@@ -17,9 +15,7 @@ export default function Home() {
         <CharacterSection />
         <MenuSection />
         <PowerSection />
-        <TeamSection />
         <DeliciousSection />
-        <FinalSection />
       </ScrollContainer>
     </main>
   );

@@ -124,7 +124,13 @@ export function PowerSection() {
                     />
                 </div>
 
-                <div className="hidden md:block h-full w-full overflow-hidden" onWheel={handleCarouselWheel}>
+                <div
+                    className="hidden md:block h-full w-full overflow-hidden"
+                    onWheel={handleCarouselWheel}
+                    data-power-carousel="true"
+                    data-carousel-index={carouselIndex}
+                    data-carousel-last-index={powerCarouselImages.length - 1}
+                >
                     <div
                         className="flex flex-col h-full w-full transition-transform duration-700 ease-in-out"
                         style={{ transform: `translateY(-${carouselIndex * 100}%)` }}
@@ -160,28 +166,61 @@ export function TeamSection() {
 
 export function DeliciousSection() {
     return (
-        <div className="w-full h-full flex items-center justify-center bg-[#F9E0A4] text-center p-8">
-            <div className="flex flex-col gap-4">
-                <h1 className="font-display text-[clamp(3rem,8vw,6rem)] text-brown font-bold tracking-tight shadow-sm animate-slideInDown">Los Deliciosos</h1>
-                <h2 className="font-display text-[clamp(2.5rem,6vw,5rem)] text-orange font-bold tracking-tight animate-[slideInUp_1s_ease-out_0.2s_forwards] opacity-0">Sanguchitos</h2>
-                <h3 className="font-mono text-[clamp(1.5rem,3vw,2.5rem)] text-dark-brown font-medium opacity-0 animate-[fadeIn_1s_ease-out_0.4s_forwards]">del Barrio</h3>
-            </div>
-        </div>
-    );
-}
+        <div className="w-full h-full bg-[#F9E0A4] relative overflow-hidden">
+            <div className="absolute inset-x-0 top-[9%]">
+                <div className="relative h-[16vh] border-b border-brand-brown/65">
+                    <h1 className="absolute left-[18%] bottom-[-14px] font-display text-brand-brown leading-none text-[clamp(4.5rem,9vw,8.6rem)]">
+                        Los Deliciosos
+                    </h1>
+                    <img
+                        src="/Brand/ave.svg"
+                        alt="Ave Pandilla"
+                        className="absolute right-[14%] bottom-[18%] w-[clamp(90px,12vw,195px)] h-auto animate-float-soft-1"
+                    />
+                </div>
 
-export function FinalSection() {
-    return (
-        <div className="w-full h-full flex items-center justify-center bg-[#F9E0A4] relative p-8">
-            <div className="flex flex-col items-center gap-8 relative z-10 text-center">
-                <img src="/Brand/logo-pandilla.svg" alt="Pandilla Logo" className="w-[70vw] max-w-[400px] h-auto drop-shadow-lg animate-float" />
-                <div className="text-brand-brown">
-                    <h2 className="font-display text-[clamp(2rem,4vw,3.5rem)] font-bold mb-4 drop-shadow-sm">Visítanos</h2>
-                    <p className="text-[clamp(1.2rem,2.5vw,2rem)] text-brand-brown font-medium drop-shadow-sm font-mono">En tu barrio de siempre</p>
+                <div className="relative h-[16vh] border-b border-brand-brown/65">
+                    <h2 className="absolute left-[24%] bottom-[-14px] font-display text-brand-brown leading-none text-[clamp(4.5rem,9vw,8.6rem)]">
+                        Sanguchitos
+                    </h2>
+                    <img
+                        src="/Brand/gato.svg"
+                        alt="Gato Pandilla"
+                        className="absolute right-[12%] bottom-[-3%] w-[clamp(92px,12vw,205px)] h-auto animate-float-soft-2"
+                    />
+                </div>
+
+                <div className="relative h-[16vh] border-b border-brand-brown/65">
+                    <h3 className="absolute left-[46%] bottom-[-14px] font-display text-brand-brown leading-none text-[clamp(4.5rem,9vw,8.6rem)]">
+                        del Barrio
+                    </h3>
+                    <img
+                        src="/Brand/oso.svg"
+                        alt="Oso Pandilla"
+                        className="absolute left-[20%] bottom-[-45%] w-[clamp(100px,13vw,230px)] h-auto animate-float-soft-3"
+                    />
                 </div>
             </div>
-            <div className="absolute inset-0 opacity-10 pointer-events-none">
-                <img src="/content/Trama.svg" alt="Trama" className="w-full h-full object-cover" />
+
+            <div className="absolute left-1/2 -translate-x-1/2 top-[64%]">
+                <button
+                    type="button"
+                    className="font-mono text-x1 text-brand-brown px-7 py-4 bg-white/68 border border-[#E9E5DB]/70 uppercase hover-shake"
+                >
+                    QUIERO UNIRME AL EQUIPO DE PANDILLA
+                </button>
+            </div>
+
+            <div className="absolute bottom-12 left-0 w-full px-12 flex flex-col md:flex-row justify-between items-center font-mono text-xl text-brand-brown gap-4">
+                <div className="text-center md:text-left">
+                    ELÍAS AGUIRRE 277, MIRAFLORES
+                </div>
+                <div className="text-center md:text-center">
+                    LUN-DOM DE 9:30AM A 9:30PM
+                </div>
+                <div className="text-center md:text-right">
+                    INSTAGRAM: @PANDILLA.PE
+                </div>
             </div>
         </div>
     );

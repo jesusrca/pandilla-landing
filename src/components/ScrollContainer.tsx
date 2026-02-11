@@ -44,6 +44,22 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
         const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
         if (Math.abs(delta) < 10) return;
 
+        // If the cursor is over the slide-4 carousel, keep wheel focus there
+        // until the user reaches the first/last image.
+        if (currentSection === 3) {
+            const target = e.target as HTMLElement | null;
+            const carouselHost = target?.closest('[data-power-carousel="true"]') as HTMLElement | null;
+            if (carouselHost) {
+                const index = Number(carouselHost.dataset.carouselIndex ?? '0');
+                const lastIndex = Number(carouselHost.dataset.carouselLastIndex ?? '0');
+                const canAdvanceDown = delta > 0 && index < lastIndex;
+                const canAdvanceUp = delta < 0 && index > 0;
+                if (canAdvanceDown || canAdvanceUp) {
+                    return;
+                }
+            }
+        }
+
         if (delta > 0) {
             goToSection(currentSection + 1);
         } else {
