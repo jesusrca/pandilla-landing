@@ -1,31 +1,8 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 export function HeroSection() {
-    const [bearOffsetX, setBearOffsetX] = useState(0);
-    const [bearOffsetY, setBearOffsetY] = useState(0);
-    const [bearRotation, setBearRotation] = useState(0);
-
-    useEffect(() => {
-        const interval = window.setInterval(() => {
-            const shouldMove = Math.random() < 0.35;
-            if (!shouldMove) {
-                setBearOffsetX(0);
-                setBearOffsetY(0);
-                setBearRotation(0);
-                return;
-            }
-            const offsetX = Math.floor(Math.random() * 5) - 2; // -2..2 px
-            const offsetY = Math.floor(Math.random() * 5) - 2; // -2..2 px
-            const rotation = (Math.random() * 4) - 2; // -2..2 deg
-            setBearOffsetX(offsetX);
-            setBearOffsetY(offsetY);
-            setBearRotation(rotation);
-        }, 2200);
-        return () => window.clearInterval(interval);
-    }, []);
-
     return (
         <div className="w-full h-full flex flex-col items-center justify-center bg-[#F9E0A4] relative p-8">
             <div className="flex flex-col items-center animate-fadeInUp">
@@ -35,15 +12,7 @@ export function HeroSection() {
                     Taller de Sanguchitos
                 </h2>
 
-                <div className="relative w-[32vw] max-w-[215px] min-w-[140px]">
-                    <img src="/content/est-age.svg" alt="EST 2024" className="w-full h-auto" />
-                    <img
-                        src="/oso.svg"
-                        alt="Oso Pandilla"
-                        className="absolute left-[50%] top-[50%] w-[18%] h-auto transition-transform duration-900 ease-out will-change-transform"
-                        style={{ transform: `translate(-50%, -50%) translate(${bearOffsetX}px, ${bearOffsetY}px) rotate(${bearRotation}deg)` }}
-                    />
-                </div>
+                <img src="/Brand/age-pandilla.svg" alt="EST 2024" className="w-[32vw] max-w-[215px] min-w-[140px] h-auto" />
             </div>
 
             {/* Footer Info */}
@@ -55,7 +24,15 @@ export function HeroSection() {
                     LUN-DOM DE 9:30AM A 9:30PM
                 </div>
                 <div className="text-center md:text-right">
-                    INSTAGRAM: @PANDILLA.PE
+                    INSTAGRAM:{' '}
+                    <a
+                        href="https://instagram.com/pandilla.pe"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline underline-offset-2"
+                    >
+                        @PANDILLA.PE
+                    </a>
                 </div>
             </div>
         </div>
@@ -219,7 +196,15 @@ export function DeliciousSection() {
                     LUN-DOM DE 9:30AM A 9:30PM
                 </div>
                 <div className="text-center md:text-right">
-                    INSTAGRAM: @PANDILLA.PE
+                    INSTAGRAM:{' '}
+                    <a
+                        href="https://instagram.com/pandilla.pe"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline underline-offset-2"
+                    >
+                        @PANDILLA.PE
+                    </a>
                 </div>
             </div>
         </div>
