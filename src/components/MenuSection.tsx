@@ -132,6 +132,7 @@ export default function MenuSection() {
                             </div>
                         </div>
                         <div className="absolute left-0 right-0 top-[102px] md:top-[120px] h-px bg-[#7A3E2B] z-30" />
+                        <div className="hidden md:block absolute md:left-[calc(50%+1.5rem)] lg:left-[calc(50%+3rem)] right-0 top-[102px] md:top-[120px] h-px bg-[#E35A2A] z-40" />
                     </div>
                 </div>
             </div>
