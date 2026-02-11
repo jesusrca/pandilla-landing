@@ -254,14 +254,25 @@
 }
 
 @keyframes swipeHintLR {
-  0%,
-  100% {
-    transform: translateX(-14px);
-    opacity: 0.28;
+  0% {
+    transform: translateX(-10px);
+    opacity: 0;
   }
-  50% {
-    transform: translateX(14px);
-    opacity: 0.55;
+  12% {
+    transform: translateX(-8px);
+    opacity: 0.32;
+  }
+  28% {
+    transform: translateX(10px);
+    opacity: 0.52;
+  }
+  40% {
+    transform: translateX(6px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(6px);
+    opacity: 0;
   }
 }
 
@@ -315,7 +326,7 @@ body {
     will-change: transform;
   }
   .animate-swipe-hint {
-    animation: swipeHintLR 1.35s ease-in-out infinite;
+    animation: swipeHintLR 3.4s ease-in-out infinite;
     will-change: transform, opacity;
   }
 }

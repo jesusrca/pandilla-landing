@@ -13,6 +13,8 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
     const [frameIndex, setFrameIndex] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
     const touchStartX = useRef(0);
+    const touchStartY = useRef(0);
+    const touchStartTarget = useRef<EventTarget | null>(null);
     const animationFrames = [
         '/content/animacion/pandilla-animacion-01.svg',
         '/content/animacion/pandilla-animacion-02.svg',
@@ -91,12 +93,36 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
     useEffect(() => {
         const handleTouchStart = (e: TouchEvent) => {
             touchStartX.current = e.changedTouches[0].screenX;
+            touchStartY.current = e.changedTouches[0].screenY;
+            touchStartTarget.current = e.target;
         };
 
         const handleTouchEnd = (e: TouchEvent) => {
             if (isScrolling) return;
             const touchEndX = e.changedTouches[0].screenX;
+            const touchEndY = e.changedTouches[0].screenY;
             const diff = touchStartX.current - touchEndX;
+            const diffY = touchStartY.current - touchEndY;
+
+            if (currentSection === 3) {
+                const startEl = touchStartTarget.current as HTMLElement | null;
+                const endEl = e.target as HTMLElement | null;
+                const carouselHost =
+                    startEl?.closest('[data-power-carousel-mobile="true"]') as HTMLElement | null ||
+                    endEl?.closest('[data-power-carousel-mobile="true"]') as HTMLElement | null;
+
+                if (carouselHost && Math.abs(diffY) > Math.abs(diff) && Math.abs(diffY) > 35) {
+                    const index = Number(carouselHost.dataset.carouselIndexMobile ?? '0');
+                    const lastIndex = Number(carouselHost.dataset.carouselLastIndexMobile ?? '0');
+
+                    if (diffY > 0 && index >= lastIndex) {
+                        goToSection(currentSection + 1);
+                    } else if (diffY < 0 && index <= 0) {
+                        goToSection(currentSection - 1);
+                    }
+                    return;
+                }
+            }
 
             if (Math.abs(diff) > 50) {
                 if (diff > 0) {
@@ -144,12 +170,13 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
             ...baseVariant,
             top: '18%',
             left: '50%',
-            scale: baseVariant.scale * 0.72,
+            scale: 0.62,
         },
         1: {
             ...baseVariant,
             top: '50%',
             left: '50%',
+            scale: 0.72,
         },
         2: {
             ...baseVariant,

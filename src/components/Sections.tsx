@@ -4,27 +4,27 @@ import React, { useRef, useState } from 'react';
 
 export function HeroSection() {
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center bg-[#F9E0A4] relative p-8">
-            <div className="flex flex-col items-center animate-fadeInUp">
-                <img src="/Brand/logo-pandilla.svg" alt="Pandilla Logo" className="w-[85vw] max-w-[850px] h-auto mb-8" />
+        <div className="w-full h-full flex flex-col items-center justify-center bg-[#F9E0A4] relative px-5 pt-12 pb-36 md:p-8">
+            <div className="flex flex-col items-center animate-fadeInUp w-full">
+                <img src="/Brand/logo-pandilla.svg" alt="Pandilla Logo" className="w-[92vw] max-w-[850px] h-auto mb-6 md:mb-8" />
 
-                <h2 className="font-display italic text-3xl md:text-5xl text-brand-brown mb-12">
+                <h2 className="font-display italic text-[2.45rem] leading-[0.95] md:text-5xl text-brand-brown mb-8 md:mb-12 text-center">
                     Taller de Sanguchitos
                 </h2>
 
-                <img src="/Brand/age-pandilla.svg" alt="EST 2024" className="w-[32vw] max-w-[215px] min-w-[140px] h-auto" />
+                <img src="/Brand/age-pandilla.svg" alt="EST 2024" className="w-[42vw] max-w-[215px] min-w-[148px] h-auto" />
             </div>
 
-            <div className="absolute bottom-[22%] left-1/2 -translate-x-1/2 md:hidden pointer-events-none">
+            <div className="absolute bottom-[21%] left-1/2 -translate-x-1/2 md:hidden pointer-events-none">
                 <img
                     src="/content/swipe.svg"
                     alt="Swipe hint"
-                    className="w-[56px] h-auto animate-swipe-hint opacity-50"
+                    className="w-[46px] h-auto animate-swipe-hint opacity-50"
                 />
             </div>
 
             {/* Footer Info */}
-            <div className="absolute bottom-12 left-0 w-full px-12 flex flex-col md:flex-row justify-between items-center font-mono text-xl text-brand-brown gap-4">
+            <div className="absolute bottom-7 md:bottom-12 left-0 w-full px-6 md:px-12 flex flex-col md:flex-row justify-between items-center font-mono text-[17px] md:text-[19px] leading-[1.12] text-brand-brown gap-2 md:gap-4">
                 <div className="text-center md:text-left">
                     ELÍAS AGUIRRE 277, MIRAFLORES
                 </div>
@@ -65,6 +65,8 @@ export function PowerSection() {
     const [mobileCarouselIndex, setMobileCarouselIndex] = useState(0);
     const lastWheelAtRef = useRef(0);
     const mobileTouchStartY = useRef(0);
+    const mobileTouchCurrentY = useRef(0);
+    const lastMobileSwipeAtRef = useRef(0);
     const powerCarouselImages = [
         '/content/slide-carrusel.jpg',
         '/content/slide-carrusel2.jpg',
@@ -112,12 +114,23 @@ export function PowerSection() {
 
     const handleMobileTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
         mobileTouchStartY.current = e.changedTouches[0].clientY;
+        mobileTouchCurrentY.current = e.changedTouches[0].clientY;
+    };
+
+    const handleMobileTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+        mobileTouchCurrentY.current = e.changedTouches[0].clientY;
+        if (Math.abs(mobileTouchStartY.current - mobileTouchCurrentY.current) > 10) {
+            e.preventDefault();
+        }
     };
 
     const handleMobileTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-        const touchEndY = e.changedTouches[0].clientY;
+        const now = Date.now();
+        if (now - lastMobileSwipeAtRef.current < 320) return;
+        const touchEndY = mobileTouchCurrentY.current || e.changedTouches[0].clientY;
         const diffY = mobileTouchStartY.current - touchEndY;
-        if (Math.abs(diffY) < 45) return;
+        if (Math.abs(diffY) < 34) return;
+        lastMobileSwipeAtRef.current = now;
 
         if (diffY > 0) {
             stepMobileCarousel(1);
@@ -131,8 +144,12 @@ export function PowerSection() {
             <div
                 className="md:hidden h-full w-full overflow-hidden relative"
                 onTouchStart={handleMobileTouchStart}
+                onTouchMove={handleMobileTouchMove}
                 onTouchEnd={handleMobileTouchEnd}
-                style={{ touchAction: 'pan-y' }}
+                style={{ touchAction: 'none' }}
+                data-power-carousel-mobile="true"
+                data-carousel-index-mobile={mobileCarouselIndex}
+                data-carousel-last-index-mobile={mobileCarouselImages.length - 1}
             >
                 <div
                     className="flex flex-col h-full w-full transition-transform duration-700 ease-in-out"
@@ -143,7 +160,7 @@ export function PowerSection() {
                             key={image}
                             src={image}
                             alt="Pandilla slide"
-                            className="block h-full w-full object-cover"
+                            className="block flex-none h-full min-h-full w-full object-cover scale-[1.03]"
                         />
                     ))}
                 </div>
@@ -174,7 +191,7 @@ export function PowerSection() {
                                 key={image}
                                 src={image}
                                 alt="Pandilla slide"
-                                className="block h-full w-full object-cover"
+                                className="block flex-none h-full min-h-full w-full object-cover scale-[1.03]"
                             />
                         ))}
                     </div>
@@ -201,45 +218,45 @@ export function TeamSection() {
 export function DeliciousSection() {
     return (
         <div className="w-full h-full bg-[#F9E0A4] relative overflow-hidden">
-            <div className="absolute inset-x-0 top-[9%]">
-                <div className="relative h-[16vh] border-b border-brand-brown/65">
-                    <h1 className="absolute left-[18%] bottom-[-14px] font-display text-brand-brown leading-none text-[clamp(4.5rem,9vw,8.6rem)]">
+            <div className="absolute inset-x-0 top-[8%] md:top-[9%]">
+                <div className="relative h-[14.2vh] md:h-[16vh] border-b border-brand-brown/65">
+                    <h1 className="absolute left-1/2 md:left-[18%] -translate-x-1/2 md:translate-x-0 bottom-[-8px] md:bottom-[-14px] font-display text-brand-brown leading-none whitespace-nowrap text-[clamp(3.1rem,12vw,8.6rem)] md:text-[clamp(4.5rem,9vw,8.6rem)]">
                         Los Deliciosos
                     </h1>
                     <img
                         src="/Brand/ave.svg"
                         alt="Ave Pandilla"
-                        className="absolute right-[14%] bottom-[18%] w-[clamp(90px,12vw,195px)] h-auto animate-float-soft-1"
+                        className="absolute right-[7%] md:right-[14%] bottom-[44%] md:bottom-[18%] w-[92px] md:w-[clamp(90px,12vw,195px)] h-auto animate-float-soft-1"
                     />
                 </div>
 
-                <div className="relative h-[16vh] border-b border-brand-brown/65">
-                    <h2 className="absolute left-[24%] bottom-[-14px] font-display text-brand-brown leading-none text-[clamp(4.5rem,9vw,8.6rem)]">
+                <div className="relative h-[14.2vh] md:h-[16vh] border-b border-brand-brown/65">
+                    <h2 className="absolute left-1/2 md:left-[24%] -translate-x-1/2 md:translate-x-0 bottom-[-8px] md:bottom-[-14px] font-display text-brand-brown leading-none whitespace-nowrap text-[clamp(3.1rem,12vw,8.6rem)] md:text-[clamp(4.5rem,9vw,8.6rem)]">
                         Sanguchitos
                     </h2>
                     <img
                         src="/Brand/gato.svg"
                         alt="Gato Pandilla"
-                        className="absolute right-[12%] bottom-[-3%] w-[clamp(92px,12vw,205px)] h-auto animate-float-soft-2"
+                        className="absolute right-[8%] md:right-[12%] bottom-[16%] md:bottom-[-3%] w-[108px] md:w-[clamp(92px,12vw,205px)] h-auto animate-float-soft-2"
                     />
                 </div>
 
-                <div className="relative h-[16vh] border-b border-brand-brown/65">
-                    <h3 className="absolute left-[46%] bottom-[-14px] font-display text-brand-brown leading-none text-[clamp(4.5rem,9vw,8.6rem)]">
+                <div className="relative h-[14.2vh] md:h-[16vh] border-b border-brand-brown/65">
+                    <h3 className="absolute left-1/2 md:left-[46%] -translate-x-1/2 md:translate-x-0 bottom-[-8px] md:bottom-[-14px] font-display text-brand-brown leading-none whitespace-nowrap text-[clamp(3.1rem,12vw,8.6rem)] md:text-[clamp(4.5rem,9vw,8.6rem)]">
                         del Barrio
                     </h3>
                     <img
                         src="/Brand/oso.svg"
                         alt="Oso Pandilla"
-                        className="absolute left-[20%] bottom-[-45%] w-[clamp(100px,13vw,230px)] h-auto animate-float-soft-3"
+                        className="absolute left-[8%] md:left-[20%] bottom-[-32%] md:bottom-[-45%] w-[116px] md:w-[clamp(100px,13vw,230px)] h-auto animate-float-soft-3"
                     />
                 </div>
             </div>
 
-            <div className="absolute left-1/2 -translate-x-1/2 top-[64%]">
+            <div className="absolute left-1/2 -translate-x-1/2 top-[63%] md:top-[64%]">
                 <button
                     type="button"
-                    className="font-mono text-x1 text-brand-brown px-7 py-4 bg-white/68 border border-[#E9E5DB]/70 uppercase hover-shake"
+                    className="font-mono text-[14px] md:text-x1 leading-none text-brand-brown px-10 md:px-7 py-3 md:py-4 min-w-[320px] md:min-w-0 bg-white/68 border border-[#E9E5DB]/70 uppercase hover-shake"
                 >
                     QUIERO UNIRME AL EQUIPO DE PANDILLA
                 </button>
