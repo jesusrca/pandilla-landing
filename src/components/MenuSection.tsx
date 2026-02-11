@@ -1,6 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+
+type MenuItem = {
+    title: string;
+    description: string;
+    image: string;
+};
 
 const menuData = {
     leftColumn: [
@@ -51,26 +57,70 @@ const drinks = [
     { name: 'CHIPS TIYAPUY', pair: 'COOKIE REPUBLIC', isSnack: true },
 ];
 
-export default function MenuSection() {
-    const pairedRows = menuData.leftColumn.slice(0, 3).map((leftItem, index) => ({
-        left: leftItem,
-        right: menuData.rightColumn[index],
-    }));
-    const lastLeft = menuData.leftColumn[3]!;
-
-    const RowItem = ({ item }: { item: { title: string; description: string } }) => (
-        <div className="grid grid-cols-[238px_1fr] items-end gap-x-[2%] pb-0">
-            <h2 className="font-display font-normal text-5xl text-brand-brown whitespace-nowrap leading-none -mb-[6px]">
+function RowItem({
+    item,
+    onTitleHover,
+}: {
+    item: MenuItem;
+    onTitleHover: (item: MenuItem | null) => void;
+}) {
+    return (
+        <div
+            className="grid grid-cols-[238px_1fr] items-end gap-x-[2%] pb-0"
+            onMouseEnter={() => onTitleHover(item)}
+            onMouseLeave={() => onTitleHover(null)}
+            onFocusCapture={() => onTitleHover(item)}
+            onBlurCapture={() => onTitleHover(null)}
+        >
+            <button
+                type="button"
+                className="font-display font-normal text-5xl text-brand-brown whitespace-nowrap leading-none -mb-[6px] text-left bg-transparent border-0 p-0 cursor-pointer"
+            >
                 {item.title}
-            </h2>
+            </button>
             <p className="font-mono text-x1 text-brand-brown/90 uppercase hidden lg:block leading-[1.2] mt-0 -mb-[2px]">
                 {item.description}
             </p>
         </div>
     );
+}
+
+export default function MenuSection() {
+    const [hoveredItem, setHoveredItem] = useState<MenuItem | null>(null);
+    const pairedRows = menuData.leftColumn.slice(0, 3).map((leftItem, index) => ({
+        left: leftItem,
+        right: menuData.rightColumn[index],
+    }));
+    const lastLeft = menuData.leftColumn[3]!;
+    const previewOffsets: Record<string, string> = {
+        'Roast Beef': '-translate-x-[54%] -translate-y-[52%]',
+        'Rubén': '-translate-x-[48%] -translate-y-[49%]',
+        'Panchito Villa': '-translate-x-[51%] -translate-y-[55%]',
+        'Tricolore': '-translate-x-[46%] -translate-y-[50%]',
+        'Rey Misterio': '-translate-x-[53%] -translate-y-[48%]',
+        'Buti de Lima': '-translate-x-[47%] -translate-y-[54%]',
+        'Italian Deli': '-translate-x-[50%] -translate-y-[50%]',
+    };
+    const previewOffsetClass = hoveredItem ? previewOffsets[hoveredItem.title] ?? '-translate-x-1/2 -translate-y-1/2' : '-translate-x-1/2 -translate-y-1/2';
 
     return (
         <section className="section bg-[#F9E0A4] relative overflow-hidden h-screen w-screen flex items-center justify-center px-2 md:px-3">
+            {hoveredItem && (
+                <div className="pointer-events-none absolute inset-0 z-40 hidden md:flex items-center justify-center">
+                    <div
+                        key={hoveredItem.title}
+                        className={`absolute left-1/2 top-1/2 w-[min(34vw,460px)] aspect-[4/5] ${previewOffsetClass} animate-[fadeIn_240ms_ease-out]`}
+                    >
+                        <div className="w-full h-full menu-preview-float">
+                            <img
+                                src={hoveredItem.image}
+                                alt={hoveredItem.title}
+                                className="w-full h-full object-contain"
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className="w-full h-full max-w-[1800px] flex flex-col relative py-6 md:py-8 -translate-y-[2%]">
 
                 {/* Header - Top Right */}
@@ -86,15 +136,15 @@ export default function MenuSection() {
                             key={row.left.title}
                             className="relative grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-24 min-h-[76px] md:min-h-[104px] items-end"
                         >
-                            <RowItem item={row.left} />
-                            <RowItem item={row.right} />
+                            <RowItem item={row.left} onTitleHover={setHoveredItem} />
+                            <RowItem item={row.right} onTitleHover={setHoveredItem} />
                             <div className="absolute left-0 right-0 bottom-0 h-px bg-[#7A3E2B] z-30" />
                         </div>
                     ))}
 
                     <div className="relative grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-24 min-h-[360px] md:min-h-[410px]">
                         <div className="pt-8 md:pt-10">
-                            <RowItem item={lastLeft} />
+                            <RowItem item={lastLeft} onTitleHover={setHoveredItem} />
                         </div>
                         <div className="pt-10 md:pt-11">
                             <div className="bg-white/80 border border-[#E9E5DB] relative z-10 px-5 py-6 md:px-8 md:py-7 backdrop-blur-[2px] translate-y-[10%]">

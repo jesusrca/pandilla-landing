@@ -243,6 +243,16 @@
   }
 }
 
+@keyframes menuPreviewFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-0.6deg);
+  }
+  50% {
+    transform: translate3d(0, -12px, 0) rotate(0.8deg);
+  }
+}
+
 :root {
   --background: #F9E0A4;
   --foreground: #75391C;
@@ -287,5 +297,9 @@ body {
   }
   .hover-shake:hover {
     animation: buttonShake 380ms ease-in-out 1;
+  }
+  .menu-preview-float {
+    animation: menuPreviewFloat 4.2s ease-in-out infinite;
+    will-change: transform;
   }
 }
