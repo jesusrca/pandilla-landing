@@ -28,6 +28,8 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
         '/oso-cursor-small.svg',
     ];
     const [sessionCursor, setSessionCursor] = useState<string>(sessionCursors[0]);
+    const footstepsAudioRef = useRef<HTMLAudioElement | null>(null);
+    const lastFootstepAtRef = useRef(0);
 
     const goToSection = useCallback((index: number) => {
         if (index < 0 || index >= children.length || index === currentSection || isScrolling) return;
@@ -167,6 +169,35 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
         setSessionCursor(sessionCursors[Math.floor(Math.random() * sessionCursors.length)]);
     }, []);
 
+    useEffect(() => {
+        const audio = new Audio('/content/universfield-cartoon-running-footsteps-250962.mp3');
+        audio.preload = 'auto';
+        audio.volume = 0.55;
+        footstepsAudioRef.current = audio;
+
+        return () => {
+            audio.pause();
+            footstepsAudioRef.current = null;
+        };
+    }, []);
+
+    const playFootsteps = useCallback(() => {
+        const now = Date.now();
+        if (now - lastFootstepAtRef.current < 260) return;
+        lastFootstepAtRef.current = now;
+
+        const audio = footstepsAudioRef.current;
+        if (!audio) return;
+
+        audio.currentTime = 0;
+        const playPromise = audio.play();
+        if (playPromise) {
+            playPromise.catch(() => {
+                // Ignore autoplay blocking errors; next direct interaction will retry.
+            });
+        }
+    }, []);
+
     // Character variants for animation between slides
     const baseVariant = {
         scale: 0.6,
@@ -239,6 +270,22 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
         <div className="relative h-screen w-screen overflow-hidden bg-[#F9E0A4]" style={{ cursor: activeCursor }}>
             {/* Moving Characters Overlay */}
             <div className="absolute inset-0 pointer-events-none z-[500]">
+            <motion.div
+                initial={characterVariants[0]}
+                animate={getActiveVariant()}
+                transition={characterTransition}
+                className="absolute"
+                style={{ pointerEvents: currentSection <= 2 ? 'auto' : 'none' }}
+            >
+                <button
+                    type="button"
+                    aria-label="Reproducir pasos de personajes"
+                    onPointerEnter={playFootsteps}
+                    onPointerDown={playFootsteps}
+                    onTouchStart={playFootsteps}
+                    className="block w-[220px] h-[130px] md:w-[250px] md:h-[140px] bg-transparent border-0 p-0 cursor-pointer"
+                />
+            </motion.div>
             <motion.div
                 initial={characterVariants[0]}
                 animate={getActiveVariant()}

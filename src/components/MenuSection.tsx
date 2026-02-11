@@ -81,7 +81,7 @@ function RowItem({
             <button
                 type="button"
                 className={`font-display font-normal text-brand-brown whitespace-nowrap leading-none text-left bg-transparent border-0 p-0 cursor-pointer ${
-                    compact ? 'text-[clamp(2.35rem,2.8vw,2.9rem)] -mb-[4px]' : 'text-5xl -mb-[6px]'
+                    compact ? 'text-[clamp(2.35rem,2.8vw,2.9rem)] -mb-[7px]' : 'text-5xl -mb-[6px]'
                 }`}
             >
                 {item.title}
@@ -134,7 +134,7 @@ export default function MenuSection() {
 
     useEffect(() => {
         const checkCompact = () => {
-            setIsCompactDesktop(window.innerWidth >= 768 && window.innerWidth < 1400);
+            setIsCompactDesktop(window.innerWidth >= 768 && window.innerWidth < 1440);
         };
         checkCompact();
         window.addEventListener('resize', checkCompact);
@@ -238,7 +238,7 @@ export default function MenuSection() {
                 </div>
             </div>
 
-            <div className={`hidden md:flex w-full h-full max-w-[1800px] flex-col relative ${isCompactDesktop ? 'py-1' : 'py-6 md:py-8'} -translate-y-[2%]`}>
+            <div className={`hidden md:flex w-full h-full max-w-[1800px] flex-col relative ${isCompactDesktop ? 'py-2 translate-y-[1.2%]' : 'py-6 md:py-8 -translate-y-[2%]'}`}>
 
                 {/* Header - Top Right */}
                 <div className={`relative border-b-2 border-[#E35A2A] ${isCompactDesktop ? 'mb-5 pt-16 lg:pt-20' : 'mb-8 md:mb-10 pt-24 md:pt-28'}`}>
@@ -260,11 +260,11 @@ export default function MenuSection() {
                     ))}
 
                     <div className={`relative grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-24 ${lastRowHeightClass}`}>
-                        <div className={isCompactDesktop ? 'pt-3 lg:pt-4' : 'pt-8 md:pt-10'}>
+                        <div className={isCompactDesktop ? 'pt-6 lg:pt-7' : 'pt-8 md:pt-10'}>
                             <RowItem item={lastLeft} onTitleHover={setHoveredItem} compact={isCompactDesktop} />
                         </div>
-                        <div className={isCompactDesktop ? 'pt-4 lg:pt-5' : 'pt-10 md:pt-11'}>
-                            <div className={`bg-white/80 border border-[#E9E5DB] relative z-10 backdrop-blur-[2px] ${isCompactDesktop ? 'px-4 py-3 lg:px-6 lg:py-4 translate-y-[4%]' : 'px-5 py-6 md:px-8 md:py-7 translate-y-[10%]'}`}>
+                        <div className={isCompactDesktop ? 'pt-8 lg:pt-9' : 'pt-10 md:pt-11'}>
+                            <div className={`bg-white/80 border border-[#E9E5DB] relative z-10 backdrop-blur-[2px] ${isCompactDesktop ? 'px-4 py-3 lg:px-6 lg:py-4 translate-y-[11%]' : 'px-5 py-6 md:px-8 md:py-7 translate-y-[10%]'}`}>
                                 <div className="flex justify-end">
                                     <h3 className={`font-mono text-brand-brown uppercase ${isCompactDesktop ? 'text-[clamp(0.95rem,1.05vw,1.08rem)] pb-0.5' : 'text-x1 pb-1'}`}>
                                         BEBIDAS & SNACKS
