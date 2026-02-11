@@ -11,6 +11,7 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
     const [currentSection, setCurrentSection] = useState(0);
     const [isScrolling, setIsScrolling] = useState(false);
     const [frameIndex, setFrameIndex] = useState(0);
+    const [isMobileViewport, setIsMobileViewport] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const touchStartX = useRef(0);
     const touchStartY = useRef(0);
@@ -154,6 +155,15 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
     }, [animationFrames.length]);
 
     useEffect(() => {
+        const updateViewport = () => {
+            setIsMobileViewport(window.innerWidth < 768);
+        };
+        updateViewport();
+        window.addEventListener('resize', updateViewport);
+        return () => window.removeEventListener('resize', updateViewport);
+    }, []);
+
+    useEffect(() => {
         setSessionCursor(sessionCursors[Math.floor(Math.random() * sessionCursors.length)]);
     }, []);
 
@@ -176,13 +186,19 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
             ...baseVariant,
             top: '50%',
             left: '50%',
-            scale: 0.72,
+            scale: 0.86,
         },
         2: {
             ...baseVariant,
             top: '89%',
             left: '9%',
             scale: 0.34,
+        },
+        menuMobile: {
+            ...baseVariant,
+            top: '13.5%',
+            left: '14.5%',
+            scale: 0.26,
         },
         default: {
             ...baseVariant,
@@ -196,8 +212,13 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
     const getActiveVariant = () => {
         if (currentSection === 0) return characterVariants[0];
         if (currentSection === 1) return characterVariants[1];
-        if (currentSection === 2) return characterVariants[2];
-        return { ...characterVariants[2], opacity: 0 };
+        if (currentSection === 2) {
+            return isMobileViewport ? characterVariants.menuMobile : characterVariants[2];
+        }
+        return {
+            ...(isMobileViewport ? characterVariants.menuMobile : characterVariants[2]),
+            opacity: 0,
+        };
     };
 
     const characterTransition = currentSection >= 3

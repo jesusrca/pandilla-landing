@@ -5,7 +5,7 @@ import React, { useRef, useState } from 'react';
 export function HeroSection() {
     return (
         <div className="w-full h-full flex flex-col items-center justify-center bg-[#F9E0A4] relative px-5 pt-12 pb-36 md:p-8">
-            <div className="flex flex-col items-center animate-fadeInUp w-full">
+            <div className="flex flex-col items-center animate-fadeInUp w-full -translate-y-4 md:translate-y-0">
                 <img src="/Brand/logo-pandilla.svg" alt="Pandilla Logo" className="w-[92vw] max-w-[850px] h-auto mb-6 md:mb-8" />
 
                 <h2 className="font-display italic text-[2.45rem] leading-[0.95] md:text-5xl text-brand-brown mb-8 md:mb-12 text-center">
@@ -26,7 +26,14 @@ export function HeroSection() {
             {/* Footer Info */}
             <div className="absolute bottom-7 md:bottom-12 left-0 w-full px-6 md:px-12 flex flex-col md:flex-row justify-between items-center font-mono text-[17px] md:text-[19px] leading-[1.12] text-brand-brown gap-2 md:gap-4">
                 <div className="text-center md:text-left">
-                    ELÍAS AGUIRRE 277, MIRAFLORES
+                    <a
+                        href="https://www.google.com/maps/search/?api=1&query=Elias+Aguirre+277%2C+Miraflores%2C+Lima"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="no-underline hover:opacity-85 transition-opacity"
+                    >
+                        ELÍAS AGUIRRE 277, MIRAFLORES
+                    </a>
                 </div>
                 <div className="text-center md:text-center">
                     LUN-DOM DE 9:30AM A 9:30PM
@@ -67,20 +74,24 @@ export function PowerSection() {
     const mobileTouchStartY = useRef(0);
     const mobileTouchCurrentY = useRef(0);
     const lastMobileSwipeAtRef = useRef(0);
-    const powerCarouselImages = [
-        '/content/slide-carrusel.jpg',
-        '/content/slide-carrusel2.jpg',
-        '/content/slide-carrusel3.jpg',
-        '/content/slide-carrusel4.jpg',
-        '/content/slide-carrusel5.jpg',
+    const powerHeroSlide = {
+        desktopSrc: '/content/Group 1.png',
+        mobileSrc: '/content/pandilla-sllide1-movil.jpg',
+    };
+    const powerCarouselSlides: Array<{ desktopSrc: string; mobileSrc?: string }> = [
+        { desktopSrc: '/content/slide-carrusel.jpg' },
+        { desktopSrc: '/content/slide-carrusel2.jpg' },
+        { desktopSrc: '/content/slide-carrusel3.jpg' },
+        { desktopSrc: '/content/slide-carrusel4.jpg' },
+        { desktopSrc: '/content/slide-carrusel5.jpg' },
     ];
-    const mobileCarouselImages = ['/content/Group 1.png', ...powerCarouselImages];
+    const mobileCarouselSlides = [powerHeroSlide, ...powerCarouselSlides];
 
     const stepCarousel = (direction: 1 | -1) => {
         setCarouselIndex((prev) => {
             const next = prev + direction;
             if (next < 0) return 0;
-            if (next >= powerCarouselImages.length) return powerCarouselImages.length - 1;
+            if (next >= powerCarouselSlides.length) return powerCarouselSlides.length - 1;
             return next;
         });
     };
@@ -91,7 +102,7 @@ export function PowerSection() {
         lastWheelAtRef.current = now;
 
         if (e.deltaY > 0) {
-            if (carouselIndex >= powerCarouselImages.length - 1) return;
+            if (carouselIndex >= powerCarouselSlides.length - 1) return;
             e.preventDefault();
             e.stopPropagation();
             stepCarousel(1);
@@ -107,7 +118,7 @@ export function PowerSection() {
         setMobileCarouselIndex((prev) => {
             const next = prev + direction;
             if (next < 0) return 0;
-            if (next >= mobileCarouselImages.length) return mobileCarouselImages.length - 1;
+            if (next >= mobileCarouselSlides.length) return mobileCarouselSlides.length - 1;
             return next;
         });
     };
@@ -149,27 +160,35 @@ export function PowerSection() {
                 style={{ touchAction: 'none' }}
                 data-power-carousel-mobile="true"
                 data-carousel-index-mobile={mobileCarouselIndex}
-                data-carousel-last-index-mobile={mobileCarouselImages.length - 1}
+                data-carousel-last-index-mobile={mobileCarouselSlides.length - 1}
             >
                 <div
                     className="flex flex-col h-full w-full transition-transform duration-700 ease-in-out"
                     style={{ transform: `translateY(-${mobileCarouselIndex * 100}%)` }}
                 >
-                    {mobileCarouselImages.map((image) => (
+                    {mobileCarouselSlides.map((slide) => (
                         <img
-                            key={image}
-                            src={image}
+                            key={slide.desktopSrc}
+                            src={slide.mobileSrc ?? slide.desktopSrc}
                             alt="Pandilla slide"
                             className="block flex-none h-full min-h-full w-full object-cover scale-[1.03]"
                         />
                     ))}
+                </div>
+
+                <div className="absolute bottom-[6.5%] left-1/2 -translate-x-1/2 pointer-events-none">
+                    <img
+                        src="/content/Swipe-down.svg"
+                        alt="Swipe down hint"
+                        className="w-[46px] h-auto animate-swipe-down-hint"
+                    />
                 </div>
             </div>
 
             <div className="hidden md:grid h-full w-full grid-cols-2">
                 <div className="h-full w-full">
                     <img
-                        src="/content/Group 1.png"
+                        src={powerHeroSlide.desktopSrc}
                         alt="The Power of Pandilla"
                         className="h-full w-full object-cover"
                     />
@@ -180,16 +199,16 @@ export function PowerSection() {
                     onWheel={handleCarouselWheel}
                     data-power-carousel="true"
                     data-carousel-index={carouselIndex}
-                    data-carousel-last-index={powerCarouselImages.length - 1}
+                    data-carousel-last-index={powerCarouselSlides.length - 1}
                 >
                     <div
                         className="flex flex-col h-full w-full transition-transform duration-700 ease-in-out"
                         style={{ transform: `translateY(-${carouselIndex * 100}%)` }}
                     >
-                        {powerCarouselImages.map((image) => (
+                        {powerCarouselSlides.map((slide) => (
                             <img
-                                key={image}
-                                src={image}
+                                key={slide.desktopSrc}
+                                src={slide.desktopSrc}
                                 alt="Pandilla slide"
                                 className="block flex-none h-full min-h-full w-full object-cover scale-[1.03]"
                             />
@@ -220,7 +239,7 @@ export function DeliciousSection() {
         <div className="w-full h-full bg-[#F9E0A4] relative overflow-hidden">
             <div className="absolute inset-x-0 top-[8%] md:top-[9%]">
                 <div className="relative h-[14.2vh] md:h-[16vh] border-b border-brand-brown/65">
-                    <h1 className="absolute left-1/2 md:left-[18%] -translate-x-1/2 md:translate-x-0 bottom-[-8px] md:bottom-[-14px] font-display text-brand-brown leading-none whitespace-nowrap text-[clamp(3.1rem,12vw,8.6rem)] md:text-[clamp(4.5rem,9vw,8.6rem)]">
+                    <h1 className="absolute left-1/2 md:left-[18%] -translate-x-1/2 md:translate-x-0 bottom-[-8px] md:bottom-[-14px] font-display text-brand-brown leading-none whitespace-nowrap text-[clamp(3.35rem,12.6vw,9rem)] md:text-[clamp(4.8rem,9.4vw,9rem)]">
                         Los Deliciosos
                     </h1>
                     <img
@@ -231,7 +250,7 @@ export function DeliciousSection() {
                 </div>
 
                 <div className="relative h-[14.2vh] md:h-[16vh] border-b border-brand-brown/65">
-                    <h2 className="absolute left-1/2 md:left-[24%] -translate-x-1/2 md:translate-x-0 bottom-[-8px] md:bottom-[-14px] font-display text-brand-brown leading-none whitespace-nowrap text-[clamp(3.1rem,12vw,8.6rem)] md:text-[clamp(4.5rem,9vw,8.6rem)]">
+                    <h2 className="absolute left-1/2 md:left-[24%] -translate-x-1/2 md:translate-x-0 bottom-[-8px] md:bottom-[-14px] font-display text-brand-brown leading-none whitespace-nowrap text-[clamp(3.35rem,12.6vw,9rem)] md:text-[clamp(4.8rem,9.4vw,9rem)]">
                         Sanguchitos
                     </h2>
                     <img
@@ -242,7 +261,7 @@ export function DeliciousSection() {
                 </div>
 
                 <div className="relative h-[14.2vh] md:h-[16vh] border-b border-brand-brown/65">
-                    <h3 className="absolute left-1/2 md:left-[46%] -translate-x-1/2 md:translate-x-0 bottom-[-8px] md:bottom-[-14px] font-display text-brand-brown leading-none whitespace-nowrap text-[clamp(3.1rem,12vw,8.6rem)] md:text-[clamp(4.5rem,9vw,8.6rem)]">
+                    <h3 className="absolute left-1/2 md:left-[46%] -translate-x-1/2 md:translate-x-0 bottom-[-8px] md:bottom-[-14px] font-display text-brand-brown leading-none whitespace-nowrap text-[clamp(3.35rem,12.6vw,9rem)] md:text-[clamp(4.8rem,9.4vw,9rem)]">
                         del Barrio
                     </h3>
                     <img
@@ -264,7 +283,14 @@ export function DeliciousSection() {
 
             <div className="absolute bottom-12 left-0 w-full px-12 flex flex-col md:flex-row justify-between items-center font-mono text-xl text-brand-brown gap-4">
                 <div className="text-center md:text-left">
-                    ELÍAS AGUIRRE 277, MIRAFLORES
+                    <a
+                        href="https://www.google.com/maps/search/?api=1&query=Elias+Aguirre+277%2C+Miraflores%2C+Lima"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="no-underline hover:opacity-85 transition-opacity"
+                    >
+                        ELÍAS AGUIRRE 277, MIRAFLORES
+                    </a>
                 </div>
                 <div className="text-center md:text-center">
                     LUN-DOM DE 9:30AM A 9:30PM

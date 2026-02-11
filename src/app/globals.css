@@ -255,23 +255,46 @@
 
 @keyframes swipeHintLR {
   0% {
-    transform: translateX(-10px);
+    transform: translateX(14px);
     opacity: 0;
   }
-  12% {
-    transform: translateX(-8px);
-    opacity: 0.32;
+  14% {
+    transform: translateX(12px);
+    opacity: 0.42;
   }
-  28% {
-    transform: translateX(10px);
-    opacity: 0.52;
+  42% {
+    transform: translateX(-14px);
+    opacity: 0.55;
   }
-  40% {
-    transform: translateX(6px);
+  56% {
+    transform: translateX(-16px);
     opacity: 0;
   }
   100% {
-    transform: translateX(6px);
+    transform: translateX(-16px);
+    opacity: 0;
+  }
+}
+
+@keyframes swipeHintDown {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  14% {
+    transform: translateY(-8px);
+    opacity: 0.42;
+  }
+  42% {
+    transform: translateY(14px);
+    opacity: 0.55;
+  }
+  56% {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(16px);
     opacity: 0;
   }
 }
@@ -327,6 +350,10 @@ body {
   }
   .animate-swipe-hint {
     animation: swipeHintLR 3.4s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+  .animate-swipe-down-hint {
+    animation: swipeHintDown 3.4s ease-in-out infinite;
     will-change: transform, opacity;
   }
 }
