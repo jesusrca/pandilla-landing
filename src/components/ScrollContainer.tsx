@@ -180,6 +180,12 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
             ...baseVariant,
             top: '18%',
             left: '50%',
+            scale: 0.5,
+        },
+        heroMobile: {
+            ...baseVariant,
+            top: '18%',
+            left: '50%',
             scale: 0.62,
         },
         1: {
@@ -210,7 +216,9 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
     };
 
     const getActiveVariant = () => {
-        if (currentSection === 0) return characterVariants[0];
+        if (currentSection === 0) {
+            return isMobileViewport ? characterVariants.heroMobile : characterVariants[0];
+        }
         if (currentSection === 1) return characterVariants[1];
         if (currentSection === 2) {
             return isMobileViewport ? characterVariants.menuMobile : characterVariants[2];
