@@ -103,6 +103,7 @@ export default function MenuSection() {
     const [hoveredItem, setHoveredItem] = useState<MenuItem | null>(null);
     const [openMobileItem, setOpenMobileItem] = useState<string | null>(null);
     const [isCompactDesktop, setIsCompactDesktop] = useState(false);
+    const [isShortMobile, setIsShortMobile] = useState(false);
     const pairedRows = menuData.leftColumn.slice(0, 3).map((leftItem, index) => ({
         left: leftItem,
         right: menuData.rightColumn[index],
@@ -133,12 +134,15 @@ export default function MenuSection() {
     const lastRowLineTopClass = isCompactDesktop ? 'top-[86px] lg:top-[98px]' : 'top-[102px] md:top-[120px]';
 
     useEffect(() => {
-        const checkCompact = () => {
-            setIsCompactDesktop(window.innerWidth >= 768 && window.innerWidth < 1440);
+        const checkResponsiveModes = () => {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            setIsCompactDesktop(width >= 768 && width < 1440);
+            setIsShortMobile(width < 768 && height <= 700);
         };
-        checkCompact();
-        window.addEventListener('resize', checkCompact);
-        return () => window.removeEventListener('resize', checkCompact);
+        checkResponsiveModes();
+        window.addEventListener('resize', checkResponsiveModes);
+        return () => window.removeEventListener('resize', checkResponsiveModes);
     }, []);
 
     return (
@@ -159,14 +163,23 @@ export default function MenuSection() {
                     </div>
                 </div>
             )}
-            <div className="md:hidden w-full h-full overflow-y-auto px-4 pt-16 pb-24" style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}>
-                <div className="relative mb-5 border-b border-[#E35A2A]">
-                    <h1 className="font-display font-normal italic text-[2.5rem] leading-none text-brand-brown text-right pb-1">
+            <div
+                className={`md:hidden w-full h-full ${
+                    isShortMobile ? 'overflow-hidden px-3 pt-8 pb-6' : 'overflow-y-auto px-4 pt-16 pb-24'
+                }`}
+                style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}
+            >
+                <div className={`relative border-b border-[#E35A2A] ${isShortMobile ? 'mb-3' : 'mb-5'}`}>
+                    <h1
+                        className={`font-display font-normal italic leading-none text-brand-brown text-right ${
+                            isShortMobile ? 'text-[2.08rem] pb-0.5' : 'text-[2.5rem] pb-1'
+                        }`}
+                    >
                         Sanguchitos
                     </h1>
                 </div>
 
-                <div className="space-y-1">
+                <div className={isShortMobile ? 'space-y-0.5' : 'space-y-1'}>
                     {mobileMenuItems.map((item) => {
                         const isOpen = openMobileItem === item.title;
                         return (
@@ -174,7 +187,9 @@ export default function MenuSection() {
                                 <button
                                     type="button"
                                     onClick={() => setOpenMobileItem(isOpen ? null : item.title)}
-                                    className="w-full text-left font-display font-normal text-[2.8rem] leading-none text-brand-brown py-2"
+                                    className={`w-full text-left font-display font-normal leading-none text-brand-brown ${
+                                        isShortMobile ? 'text-[2.15rem] py-1.5' : 'text-[2.8rem] py-2'
+                                    }`}
                                 >
                                     {item.title}
                                 </button>
@@ -192,9 +207,15 @@ export default function MenuSection() {
                                             <img
                                                 src={item.image}
                                                 alt={item.title}
-                                                className="w-full h-[160px] object-cover rounded-[8px] mb-2"
+                                                className={`w-full object-cover rounded-[8px] mb-2 ${
+                                                    isShortMobile ? 'h-[88px]' : 'h-[160px]'
+                                                }`}
                                             />
-                                            <p className="font-mono text-[18px] leading-[1.22] text-brand-brown/90 uppercase">
+                                            <p
+                                                className={`font-mono text-brand-brown/90 uppercase ${
+                                                    isShortMobile ? 'text-[14px] leading-[1.16]' : 'text-[18px] leading-[1.22]'
+                                                }`}
+                                            >
                                                 {item.description}
                                             </p>
                                         </div>
@@ -205,32 +226,52 @@ export default function MenuSection() {
                     })}
                 </div>
 
-                <div className="mt-6 bg-white/72 border border-[#E9E5DB] px-4 py-4">
-                    <h3 className="font-mono text-[18px] text-brand-brown uppercase text-right pb-2">
+                <div className={`bg-white/72 border border-[#E9E5DB] ${isShortMobile ? 'mt-3 px-3 py-2.5' : 'mt-6 px-4 py-4'}`}>
+                    <h3
+                        className={`font-mono text-brand-brown uppercase text-right ${
+                            isShortMobile ? 'text-[14px] pb-1' : 'text-[18px] pb-2'
+                        }`}
+                    >
                         BEBIDAS & SNACKS
                     </h3>
-                    <div className="space-y-1">
+                    <div className={isShortMobile ? 'space-y-0.5' : 'space-y-1'}>
                         {drinks.slice(0, 3).map((drink) => (
                             <div
                                 key={drink.name}
                                 className="w-full border-b border-brand-brown/60"
                                 style={{ borderBottomStyle: 'dotted' }}
                             >
-                                <div className="grid grid-cols-2 items-start py-[3px]">
-                                    <span className="font-mono text-[18px] leading-[1.15] text-brand-brown uppercase">
+                                <div className={`grid grid-cols-2 items-start ${isShortMobile ? 'py-[1px]' : 'py-[3px]'}`}>
+                                    <span
+                                        className={`font-mono text-brand-brown uppercase ${
+                                            isShortMobile ? 'text-[13px] leading-[1.08]' : 'text-[18px] leading-[1.15]'
+                                        }`}
+                                    >
                                         {drink.name}
                                     </span>
-                                    <span className="font-mono text-[18px] leading-[1.15] text-brand-brown uppercase text-left">
+                                    <span
+                                        className={`font-mono text-brand-brown uppercase text-left ${
+                                            isShortMobile ? 'text-[13px] leading-[1.08]' : 'text-[18px] leading-[1.15]'
+                                        }`}
+                                    >
                                         {drink.pair}
                                     </span>
                                 </div>
                             </div>
                         ))}
-                        <div className="grid grid-cols-2 items-start pt-4">
-                            <span className="font-mono text-[18px] leading-[1.15] text-brand-brown uppercase">
+                        <div className={`grid grid-cols-2 items-start ${isShortMobile ? 'pt-2' : 'pt-4'}`}>
+                            <span
+                                className={`font-mono text-brand-brown uppercase ${
+                                    isShortMobile ? 'text-[13px] leading-[1.08]' : 'text-[18px] leading-[1.15]'
+                                }`}
+                            >
                                 CHIPS TIYAPUY
                             </span>
-                            <span className="font-mono text-[18px] leading-[1.15] text-brand-brown uppercase text-left">
+                            <span
+                                className={`font-mono text-brand-brown uppercase text-left ${
+                                    isShortMobile ? 'text-[13px] leading-[1.08]' : 'text-[18px] leading-[1.15]'
+                                }`}
+                            >
                                 COOKIE REPUBLIC
                             </span>
                         </div>
@@ -238,10 +279,10 @@ export default function MenuSection() {
                 </div>
             </div>
 
-            <div className={`hidden md:flex w-full h-full max-w-[1800px] flex-col relative ${isCompactDesktop ? 'py-2 translate-y-[1.2%]' : 'py-6 md:py-8 -translate-y-[2%]'}`}>
+            <div className={`hidden md:flex w-full h-full max-w-[1800px] flex-col relative ${isCompactDesktop ? 'py-2 translate-y-[3.2%]' : 'py-6 md:py-8 -translate-y-[2%]'}`}>
 
                 {/* Header - Top Right */}
-                <div className={`relative border-b-2 border-[#E35A2A] ${isCompactDesktop ? 'mb-5 pt-16 lg:pt-20' : 'mb-8 md:mb-10 pt-24 md:pt-28'}`}>
+                <div className={`relative border-b-2 border-[#E35A2A] ${isCompactDesktop ? 'mb-5 pt-20 lg:pt-24' : 'mb-8 md:mb-10 pt-24 md:pt-28'}`}>
                     <h1 className={`absolute right-0 font-display font-normal italic text-brand-brown whitespace-nowrap leading-none ${isCompactDesktop ? '-bottom-0.5 text-[clamp(2.55rem,3.2vw,3.05rem)]' : '-bottom-1 text-5x1'}`}>
                         Sanguchitos
                     </h1>
