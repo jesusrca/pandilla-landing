@@ -98,13 +98,15 @@ export function CharacterSection({ isActive = false }: { isActive?: boolean }) {
     );
 }
 
-export function PowerSection() {
+export function PowerSection({ isActive = false }: { isActive?: boolean }) {
     const [carouselIndex, setCarouselIndex] = useState(0);
     const [mobileCarouselIndex, setMobileCarouselIndex] = useState(0);
     const lastWheelAtRef = useRef(0);
     const mobileTouchStartY = useRef(0);
     const mobileTouchCurrentY = useRef(0);
     const lastMobileSwipeAtRef = useRef(0);
+    const desktopCarouselRef = useRef<HTMLDivElement | null>(null);
+    const autoAdvanceRef = useRef<number | null>(null);
     const powerHeroSlide = {
         desktopSrc: '/content/Group 1.png',
         mobileSrc: '/content/pandilla-sllide1-movil.jpg',
@@ -127,10 +129,12 @@ export function PowerSection() {
         });
     };
 
-    const handleCarouselWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    const handleDesktopCarouselWheel = (e: React.WheelEvent<HTMLDivElement>) => {
         const now = Date.now();
-        if (now - lastWheelAtRef.current < 320) return;
+        if (now - lastWheelAtRef.current < 260) return;
         lastWheelAtRef.current = now;
+
+        if (Math.abs(e.deltaY) < 8) return;
 
         if (e.deltaY > 0) {
             if (carouselIndex >= powerCarouselSlides.length - 1) return;
@@ -144,6 +148,28 @@ export function PowerSection() {
             stepCarousel(-1);
         }
     };
+
+    useEffect(() => {
+        // Auto-advance only when this slide is active and only on desktop.
+        if (!isActive) return;
+        if (window.innerWidth < 768) return;
+
+        if (autoAdvanceRef.current) {
+            window.clearInterval(autoAdvanceRef.current);
+            autoAdvanceRef.current = null;
+        }
+
+        autoAdvanceRef.current = window.setInterval(() => {
+            setCarouselIndex((prev) => (prev + 1) % powerCarouselSlides.length);
+        }, 4200);
+
+        return () => {
+            if (autoAdvanceRef.current) {
+                window.clearInterval(autoAdvanceRef.current);
+                autoAdvanceRef.current = null;
+            }
+        };
+    }, [isActive, powerCarouselSlides.length]);
 
     const stepMobileCarousel = (direction: 1 | -1) => {
         setMobileCarouselIndex((prev) => {
@@ -194,14 +220,17 @@ export function PowerSection() {
                 data-carousel-last-index-mobile={mobileCarouselSlides.length - 1}
             >
                 <div
-                    className="flex flex-col h-full w-full transition-transform duration-700 ease-in-out"
+                    className="flex flex-col h-full w-full transition-transform duration-700 ease-in-out will-change-transform"
                     style={{ transform: `translateY(-${mobileCarouselIndex * 100}%)` }}
                 >
-                    {mobileCarouselSlides.map((slide) => (
+                    {mobileCarouselSlides.map((slide, i) => (
                         <img
                             key={slide.desktopSrc}
                             src={slide.mobileSrc ?? slide.desktopSrc}
                             alt="Pandilla slide"
+                            fetchPriority={i === 0 ? 'high' : 'auto'}
+                            loading={i === 0 ? 'eager' : 'lazy'}
+                            decoding="async"
                             className="block flex-none h-full min-h-full w-full object-cover scale-[1.03]"
                         />
                     ))}
@@ -220,31 +249,38 @@ export function PowerSection() {
                 </div>
             </div>
 
-            <div className="hidden md:grid h-full w-full grid-cols-2">
-                <div className="h-full w-full">
-                    <img
-                        src={powerHeroSlide.desktopSrc}
-                        alt="The Power of Pandilla"
-                        className="h-full w-full object-cover"
-                    />
-                </div>
+                <div className="hidden md:grid h-full w-full grid-cols-2">
+                    <div className="h-full w-full">
+                        <img
+                            src={powerHeroSlide.desktopSrc}
+                            alt="The Power of Pandilla"
+                            fetchPriority="high"
+                            loading="eager"
+                            decoding="async"
+                            className="h-full w-full object-cover"
+                        />
+                    </div>
 
                 <div
                     className="hidden md:block h-full w-full overflow-hidden"
-                    onWheel={handleCarouselWheel}
+                    ref={desktopCarouselRef}
+                    onWheelCapture={handleDesktopCarouselWheel}
                     data-power-carousel="true"
                     data-carousel-index={carouselIndex}
                     data-carousel-last-index={powerCarouselSlides.length - 1}
                 >
                     <div
-                        className="flex flex-col h-full w-full transition-transform duration-700 ease-in-out"
+                        className="flex flex-col h-full w-full transition-transform duration-700 ease-in-out will-change-transform"
                         style={{ transform: `translateY(-${carouselIndex * 100}%)` }}
                     >
-                        {powerCarouselSlides.map((slide) => (
+                        {powerCarouselSlides.map((slide, i) => (
                             <img
                                 key={slide.desktopSrc}
                                 src={slide.desktopSrc}
                                 alt="Pandilla slide"
+                                fetchPriority={i === 0 ? 'high' : 'auto'}
+                                loading={i === 0 ? 'eager' : 'lazy'}
+                                decoding="async"
                                 className="block flex-none h-full min-h-full w-full object-cover scale-[1.03]"
                             />
                         ))}

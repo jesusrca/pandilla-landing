@@ -263,7 +263,7 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
         ? { duration: 0.45, ease: 'easeOut' as const }
         : { type: 'spring' as const, damping: 35, stiffness: 60 };
 
-    const activeCursor = `url('${sessionCursor}') 10 10, auto`;
+    const activeCursor = `url('${sessionCursor}') 8 8, auto`;
 
     const activeVariant = getActiveVariant();
     const characterStyle: React.CSSProperties = {
