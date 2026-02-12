@@ -86,7 +86,7 @@ function RowItem({
                     compact
                         ? tight
                             ? 'text-[clamp(2.65rem,3.15vw,3.25rem)] -mb-[7px]'
-                            : 'text-[clamp(2.35rem,2.8vw,2.9rem)] -mb-[7px]'
+                            : 'text-[clamp(2.5rem,2.95vw,3.05rem)] -mb-[7px]'
                         : 'text-5xl -mb-[6px]'
                 } menu-dish-title`}
             >
@@ -97,7 +97,7 @@ function RowItem({
                     compact
                         ? tight
                             ? 'text-[clamp(1.08rem,1.22vw,1.24rem)] leading-[1.08] -mb-[1px]'
-                            : 'text-[clamp(0.95rem,1.06vw,1.08rem)] leading-[1.08] -mb-[1px]'
+                            : 'text-[clamp(1.02rem,1.15vw,1.18rem)] leading-[1.08] -mb-[1px]'
                         : 'text-x1 leading-[1.2] -mb-[2px]'
                 } menu-dish-desc`}
             >
@@ -364,7 +364,7 @@ export default function MenuSection() {
                                             isCompactDesktop
                                                 ? isTightCompactDesktop
                                                     ? 'text-[clamp(1.08rem,1.22vw,1.24rem)] pb-0.5'
-                                                    : 'text-[clamp(0.95rem,1.05vw,1.08rem)] pb-0.5'
+                                                    : 'text-[clamp(1.02rem,1.15vw,1.18rem)] pb-0.5'
                                                 : 'text-x1 pb-1'
                                         }`}
                                     >
@@ -384,7 +384,7 @@ export default function MenuSection() {
                                                         isCompactDesktop
                                                             ? isTightCompactDesktop
                                                                 ? 'text-[clamp(1.08rem,1.22vw,1.24rem)]'
-                                                                : 'text-[clamp(0.95rem,1.05vw,1.08rem)]'
+                                                                : 'text-[clamp(1.02rem,1.15vw,1.18rem)]'
                                                             : 'text-x1'
                                                     }`}
                                                 >
@@ -395,7 +395,7 @@ export default function MenuSection() {
                                                         isCompactDesktop
                                                             ? isTightCompactDesktop
                                                                 ? 'text-[clamp(1.08rem,1.22vw,1.24rem)]'
-                                                                : 'text-[clamp(0.95rem,1.05vw,1.08rem)]'
+                                                                : 'text-[clamp(1.02rem,1.15vw,1.18rem)]'
                                                             : 'text-x1'
                                                     }`}
                                                 >
@@ -410,7 +410,7 @@ export default function MenuSection() {
                                                 isCompactDesktop
                                                     ? isTightCompactDesktop
                                                         ? 'text-[clamp(1.08rem,1.22vw,1.24rem)]'
-                                                        : 'text-[clamp(0.95rem,1.05vw,1.08rem)]'
+                                                        : 'text-[clamp(1.02rem,1.15vw,1.18rem)]'
                                                     : 'text-x1'
                                             }`}
                                         >
@@ -421,7 +421,7 @@ export default function MenuSection() {
                                                 isCompactDesktop
                                                     ? isTightCompactDesktop
                                                         ? 'text-[clamp(1.08rem,1.22vw,1.24rem)]'
-                                                        : 'text-[clamp(0.95rem,1.05vw,1.08rem)]'
+                                                        : 'text-[clamp(1.02rem,1.15vw,1.18rem)]'
                                                     : 'text-x1'
                                             }`}
                                         >

@@ -272,8 +272,8 @@ export function DeliciousSection() {
                     <h1
                         className={`absolute left-1/2 md:left-[18%] -translate-x-1/2 md:translate-x-0 font-display text-brand-brown leading-none whitespace-nowrap md:bottom-[-14px] md:text-[clamp(4.8rem,9.4vw,9rem)] ${
                             isShortMobile
-                                ? 'bottom-[-6px] text-[clamp(2.7rem,10.6vw,4.35rem)]'
-                                : 'bottom-[-8px] text-[clamp(3.35rem,12.6vw,9rem)]'
+                                ? 'bottom-[-6px] text-[clamp(2.85rem,11.2vw,4.6rem)]'
+                                : 'bottom-[-8px] text-[clamp(3.6rem,13.2vw,9rem)]'
                         } final-fit-title`}
                     >
                         Los Deliciosos
@@ -291,8 +291,8 @@ export function DeliciousSection() {
                     <h2
                         className={`absolute left-1/2 md:left-[24%] -translate-x-1/2 md:translate-x-0 font-display text-brand-brown leading-none whitespace-nowrap md:bottom-[-14px] md:text-[clamp(4.8rem,9.4vw,9rem)] ${
                             isShortMobile
-                                ? 'bottom-[-6px] text-[clamp(2.7rem,10.6vw,4.35rem)]'
-                                : 'bottom-[-8px] text-[clamp(3.35rem,12.6vw,9rem)]'
+                                ? 'bottom-[-6px] text-[clamp(2.85rem,11.2vw,4.6rem)]'
+                                : 'bottom-[-8px] text-[clamp(3.6rem,13.2vw,9rem)]'
                         } final-fit-title`}
                     >
                         Sanguchitos
@@ -310,8 +310,8 @@ export function DeliciousSection() {
                     <h3
                         className={`absolute left-1/2 md:left-[46%] -translate-x-1/2 md:translate-x-0 font-display text-brand-brown leading-none whitespace-nowrap md:bottom-[-14px] md:text-[clamp(4.8rem,9.4vw,9rem)] ${
                             isShortMobile
-                                ? 'bottom-[-6px] text-[clamp(2.7rem,10.6vw,4.35rem)]'
-                                : 'bottom-[-8px] text-[clamp(3.35rem,12.6vw,9rem)]'
+                                ? 'bottom-[-6px] text-[clamp(2.85rem,11.2vw,4.6rem)]'
+                                : 'bottom-[-8px] text-[clamp(3.6rem,13.2vw,9rem)]'
                         } final-fit-title`}
                     >
                         del Barrio
