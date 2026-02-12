@@ -102,6 +102,7 @@ export function PowerSection({ isActive = false }: { isActive?: boolean }) {
     const [carouselIndex, setCarouselIndex] = useState(0);
     const [mobileCarouselIndex, setMobileCarouselIndex] = useState(0);
     const lastWheelAtRef = useRef(0);
+    const wheelAccumRef = useRef(0);
     const mobileTouchStartY = useRef(0);
     const mobileTouchCurrentY = useRef(0);
     const lastMobileSwipeAtRef = useRef(0);
@@ -129,25 +130,40 @@ export function PowerSection({ isActive = false }: { isActive?: boolean }) {
         });
     };
 
-    const handleDesktopCarouselWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-        const now = Date.now();
-        if (now - lastWheelAtRef.current < 260) return;
-        lastWheelAtRef.current = now;
+    useEffect(() => {
+        const el = desktopCarouselRef.current;
+        if (!el) return;
 
-        if (Math.abs(e.deltaY) < 8) return;
+        const onWheel = (e: WheelEvent) => {
+            // Use a native non-passive wheel listener so preventDefault works on mouse wheels.
+            const now = Date.now();
+            if (now - lastWheelAtRef.current < 90) return;
+            lastWheelAtRef.current = now;
 
-        if (e.deltaY > 0) {
-            if (carouselIndex >= powerCarouselSlides.length - 1) return;
-            e.preventDefault();
-            e.stopPropagation();
-            stepCarousel(1);
-        } else if (e.deltaY < 0) {
-            if (carouselIndex <= 0) return;
-            e.preventDefault();
-            e.stopPropagation();
-            stepCarousel(-1);
-        }
-    };
+            // Accumulate deltas to support both high-res trackpads and "notched" mouse wheels.
+            wheelAccumRef.current += e.deltaY;
+            const threshold = 55;
+            if (Math.abs(wheelAccumRef.current) < threshold) return;
+
+            const dir = wheelAccumRef.current > 0 ? 1 : -1;
+            wheelAccumRef.current = 0;
+
+            if (dir > 0) {
+                if (carouselIndex >= powerCarouselSlides.length - 1) return;
+                e.preventDefault();
+                e.stopPropagation();
+                stepCarousel(1);
+            } else {
+                if (carouselIndex <= 0) return;
+                e.preventDefault();
+                e.stopPropagation();
+                stepCarousel(-1);
+            }
+        };
+
+        el.addEventListener('wheel', onWheel, { passive: false });
+        return () => el.removeEventListener('wheel', onWheel);
+    }, [carouselIndex, powerCarouselSlides.length]);
 
     useEffect(() => {
         // Auto-advance only when this slide is active and only on desktop.
@@ -264,7 +280,6 @@ export function PowerSection({ isActive = false }: { isActive?: boolean }) {
                 <div
                     className="hidden md:block h-full w-full overflow-hidden"
                     ref={desktopCarouselRef}
-                    onWheelCapture={handleDesktopCarouselWheel}
                     data-power-carousel="true"
                     data-carousel-index={carouselIndex}
                     data-carousel-last-index={powerCarouselSlides.length - 1}

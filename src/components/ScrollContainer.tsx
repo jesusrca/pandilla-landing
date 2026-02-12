@@ -26,7 +26,8 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
         '/content/ave-cursor-small.svg',
         '/oso-cursor-small.svg',
     ];
-    const [sessionCursor, setSessionCursor] = useState<string>(sessionCursors[0]);
+    // Keep deterministic to avoid SSR/CSR hydration mismatches.
+    const sessionCursor = sessionCursors[0]!;
     const footstepsAudioRef = useRef<HTMLAudioElement | null>(null);
     const lastFootstepAtRef = useRef(0);
 
@@ -157,15 +158,12 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
 
     useEffect(() => {
         const updateViewport = () => {
-            setIsMobileViewport(window.innerWidth < 768);
+            const width = window.innerWidth;
+            setIsMobileViewport(width < 768);
         };
         updateViewport();
         window.addEventListener('resize', updateViewport);
         return () => window.removeEventListener('resize', updateViewport);
-    }, []);
-
-    useEffect(() => {
-        setSessionCursor(sessionCursors[Math.floor(Math.random() * sessionCursors.length)]);
     }, []);
 
     useEffect(() => {
@@ -232,7 +230,8 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
         },
         menuMobile: {
             ...baseVariant,
-            top: '9%',
+            // Keep the character aligned with the "Sanguchitos" header across mobile sizes.
+            top: '6.5%',
             left: '13%',
             scale: 0.34,
         },
@@ -251,17 +250,17 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
         }
         if (currentSection === 1) return characterVariants[1];
         if (currentSection === 2) {
-            return isMobileViewport ? characterVariants.menuMobile : characterVariants[2];
+            return isMobileViewport
+                ? characterVariants.menuMobile
+                : characterVariants[2];
         }
         return {
-            ...(isMobileViewport ? characterVariants.menuMobile : characterVariants[2]),
+            ...(isMobileViewport
+                ? characterVariants.menuMobile
+                : characterVariants[2]),
             opacity: 0,
         };
     };
-
-    const characterTransition = currentSection >= 3
-        ? { duration: 0.45, ease: 'easeOut' as const }
-        : { type: 'spring' as const, damping: 35, stiffness: 60 };
 
     const activeCursor = `url('${sessionCursor}') 8 8, auto`;
 
@@ -314,7 +313,7 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
                 {children.map((child, index) => (
                     <div key={index} className="min-w-[100vw] h-full flex items-center justify-center relative overflow-hidden">
                         {React.isValidElement(child)
-                            ? React.cloneElement(child as React.ReactElement<any>, {
+                            ? React.cloneElement(child as React.ReactElement<{ isActive?: boolean }>, {
                                 isActive: index === currentSection,
                             })
                             : child}

@@ -112,6 +112,7 @@ export default function MenuSection() {
     const [openMobileItem, setOpenMobileItem] = useState<string | null>(null);
     const [isCompactDesktop, setIsCompactDesktop] = useState(false);
     const [isShortMobile, setIsShortMobile] = useState(false);
+    const [isTallMobile, setIsTallMobile] = useState(false);
     const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
     const pairedRows = menuData.leftColumn.slice(0, 3).map((leftItem, index) => ({
         left: leftItem,
@@ -160,12 +161,16 @@ export default function MenuSection() {
             // Height is the primary constraint (we want everything to fit within 100vh).
             setIsCompactDesktop(width >= 768 && height < 860);
             setIsShortMobile(width < 768 && height <= 700);
+            // "Tall mobile" (e.g. iPhone Pro Max class devices): keep the closed menu fully visible without scrolling.
+            setIsTallMobile(width < 768 && height >= 800);
             setViewportSize({ width, height });
         };
         checkResponsiveModes();
         window.addEventListener('resize', checkResponsiveModes);
         return () => window.removeEventListener('resize', checkResponsiveModes);
     }, []);
+
+    const isMobileMenuScrollEnabled = !isShortMobile && (!isTallMobile || openMobileItem !== null);
 
     return (
         <section className="section menu-fit bg-[#F9E0A4] relative overflow-hidden h-screen w-screen flex items-center justify-center px-2 md:px-3">
@@ -187,14 +192,18 @@ export default function MenuSection() {
             )}
             <div
                 className={`md:hidden w-full h-full ${
-                    isShortMobile ? 'overflow-hidden px-3 pt-8 pb-6' : 'overflow-y-auto px-4 pt-16 pb-24'
+                    isShortMobile
+                        ? 'overflow-hidden px-3 pt-8 pb-6'
+                        : isTallMobile
+                            ? `${isMobileMenuScrollEnabled ? 'overflow-y-auto' : 'overflow-hidden'} px-4 pt-12 pb-10`
+                            : 'overflow-y-auto px-4 pt-16 pb-24'
                 }`}
                 style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}
             >
                 <div className={`relative border-b border-[#E35A2A] ${isShortMobile ? 'mb-3' : 'mb-5'}`}>
                     <h2
                         className={`font-display font-normal italic leading-none text-brand-brown text-right ${
-                            isShortMobile ? 'text-[2.08rem] pb-0.5' : 'text-[2.5rem] pb-1'
+                            isShortMobile ? 'text-[2.08rem] pb-0.5' : isTallMobile ? 'text-[2.3rem] pb-1' : 'text-[2.5rem] pb-1'
                         }`}
                     >
                         Sanguchitos
@@ -210,7 +219,7 @@ export default function MenuSection() {
                                     type="button"
                                     onClick={() => setOpenMobileItem(isOpen ? null : item.title)}
                                     className={`w-full text-left font-display font-normal leading-none text-brand-brown ${
-                                        isShortMobile ? 'text-[2.15rem] py-1.5' : 'text-[2.8rem] py-2'
+                                        isShortMobile ? 'text-[2.15rem] py-1.5' : isTallMobile ? 'text-[2.6rem] py-1.5' : 'text-[2.8rem] py-2'
                                     }`}
                                 >
                                     {item.title}
@@ -254,7 +263,11 @@ export default function MenuSection() {
                     })}
                 </div>
 
-                <div className={`bg-white/72 border border-[#E9E5DB] ${isShortMobile ? 'mt-3 px-3 py-2.5' : 'mt-6 px-4 py-4'}`}>
+                <div
+                    className={`bg-white/72 border border-[#E9E5DB] ${
+                        isShortMobile ? 'mt-3 px-3 py-2.5' : isTallMobile ? 'mt-4 px-4 py-3.5' : 'mt-6 px-4 py-4'
+                    }`}
+                >
                     <h3
                         className={`font-mono text-brand-brown uppercase text-right ${
                             isShortMobile ? 'text-[14px] pb-1' : 'text-[18px] pb-2'
