@@ -226,20 +226,26 @@ export default function MenuSection() {
                                                 isOpen ? 'translate-y-0' : '-translate-y-1'
                                             }`}
                                         >
-                                            <img
-                                                src={item.image}
-                                                alt={item.title}
-                                                className={`w-full object-cover rounded-[8px] mb-2 ${
-                                                    isShortMobile ? 'h-[88px]' : 'h-[160px]'
-                                                }`}
-                                            />
-                                            <p
-                                                className={`font-mono text-brand-brown/90 uppercase ${
-                                                    isShortMobile ? 'text-[14px] leading-[1.16]' : 'text-[18px] leading-[1.22]'
-                                                }`}
-                                            >
-                                                {item.description}
-                                            </p>
+                                            {isOpen && (
+                                                <>
+                                                    <img
+                                                        src={item.image}
+                                                        alt={item.title}
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                        className={`w-full object-cover rounded-[8px] mb-2 ${
+                                                            isShortMobile ? 'h-[88px]' : 'h-[160px]'
+                                                        }`}
+                                                    />
+                                                    <p
+                                                        className={`font-mono text-brand-brown/90 uppercase ${
+                                                            isShortMobile ? 'text-[14px] leading-[1.16]' : 'text-[18px] leading-[1.22]'
+                                                        }`}
+                                                    >
+                                                        {item.description}
+                                                    </p>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

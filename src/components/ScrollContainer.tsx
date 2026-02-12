@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { motion } from 'framer-motion';
 
 interface ScrollContainerProps {
     children: React.ReactNode[];
@@ -266,45 +265,44 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
 
     const activeCursor = `url('${sessionCursor}') 10 10, auto`;
 
-        return (
+    const activeVariant = getActiveVariant();
+    const characterStyle: React.CSSProperties = {
+        position: 'absolute',
+        top: activeVariant.top as string,
+        left: activeVariant.left as string,
+        opacity: activeVariant.opacity as number,
+        transform: `translate(-50%, -50%) scale(${activeVariant.scale})`,
+        // Approximate the old spring feel without JS runtime cost.
+        transition:
+            currentSection >= 3
+                ? 'opacity 450ms ease-out, transform 450ms ease-out, top 450ms ease-out, left 450ms ease-out'
+                : 'opacity 800ms cubic-bezier(0.22, 1, 0.36, 1), transform 800ms cubic-bezier(0.22, 1, 0.36, 1), top 800ms cubic-bezier(0.22, 1, 0.36, 1), left 800ms cubic-bezier(0.22, 1, 0.36, 1)',
+    };
+
+    return (
         <div className="relative app-viewport w-screen overflow-hidden bg-[#F9E0A4]" style={{ cursor: activeCursor }}>
             {/* Moving Characters Overlay */}
             <div className="absolute inset-0 pointer-events-none z-[500]">
-            <motion.div
-                initial={characterVariants[0]}
-                animate={getActiveVariant()}
-                transition={characterTransition}
-                className="absolute"
-                style={{ pointerEvents: currentSection <= 2 ? 'auto' : 'none' }}
-            >
-                <button
-                    type="button"
-                    aria-label="Reproducir pasos de personajes"
-                    onPointerEnter={playFootsteps}
-                    onPointerDown={playFootsteps}
-                    onTouchStart={playFootsteps}
-                    className="block w-[220px] h-[130px] md:w-[250px] md:h-[140px] bg-transparent border-0 p-0 cursor-pointer"
-                />
-            </motion.div>
-            <motion.div
-                initial={characterVariants[0]}
-                animate={getActiveVariant()}
-                transition={characterTransition}
-                className="absolute"
-            >
-                <div className="relative w-[99vw] max-w-[1100px] aspect-[1080/470] origin-bottom-left scale-[1.1]">
-                    {animationFrames.map((frame, index) => (
+                <div className="absolute" style={{ ...characterStyle, pointerEvents: currentSection <= 2 ? 'auto' : 'none' }}>
+                    <button
+                        type="button"
+                        aria-label="Reproducir pasos de personajes"
+                        onPointerEnter={playFootsteps}
+                        onPointerDown={playFootsteps}
+                        onTouchStart={playFootsteps}
+                        className="block w-[220px] h-[130px] md:w-[250px] md:h-[140px] bg-transparent border-0 p-0 cursor-pointer"
+                    />
+                    <div className="relative w-[99vw] max-w-[1100px] aspect-[1080/470] origin-bottom-left scale-[1.1]">
                         <img
-                            key={frame}
-                            src={frame}
+                            src={animationFrames[frameIndex]}
                             alt="Personajes Pandilla"
-                            className={`absolute inset-0 w-full h-full object-contain ${
-                                index === frameIndex ? 'opacity-100' : 'opacity-0'
-                            }`}
+                            fetchPriority="high"
+                            loading="eager"
+                            decoding="async"
+                            className="absolute inset-0 w-full h-full object-contain"
                         />
-                    ))}
+                    </div>
                 </div>
-            </motion.div>
             </div>
 
             {/* Main Container */}
