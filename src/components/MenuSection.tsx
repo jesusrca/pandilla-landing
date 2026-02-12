@@ -61,10 +61,12 @@ function RowItem({
     item,
     onTitleHover,
     compact = false,
+    tight = false,
 }: {
     item: MenuItem;
     onTitleHover: (item: MenuItem | null) => void;
     compact?: boolean;
+    tight?: boolean;
 }) {
     return (
         <div
@@ -81,17 +83,23 @@ function RowItem({
             <button
                 type="button"
                 className={`font-display font-normal text-brand-brown whitespace-nowrap leading-none text-left bg-transparent border-0 p-0 cursor-pointer ${
-                    compact ? 'text-[clamp(2.35rem,2.8vw,2.9rem)] -mb-[7px]' : 'text-5xl -mb-[6px]'
-                }`}
+                    compact
+                        ? tight
+                            ? 'text-[clamp(2.65rem,3.15vw,3.25rem)] -mb-[7px]'
+                            : 'text-[clamp(2.35rem,2.8vw,2.9rem)] -mb-[7px]'
+                        : 'text-5xl -mb-[6px]'
+                } menu-dish-title`}
             >
                 {item.title}
             </button>
             <p
                 className={`font-mono text-brand-brown/90 uppercase hidden lg:block mt-0 ${
                     compact
-                        ? 'text-[clamp(0.95rem,1.06vw,1.08rem)] leading-[1.08] -mb-[1px]'
+                        ? tight
+                            ? 'text-[clamp(1.08rem,1.22vw,1.24rem)] leading-[1.08] -mb-[1px]'
+                            : 'text-[clamp(0.95rem,1.06vw,1.08rem)] leading-[1.08] -mb-[1px]'
                         : 'text-x1 leading-[1.2] -mb-[2px]'
-                }`}
+                } menu-dish-desc`}
             >
                 {item.description}
             </p>
@@ -104,6 +112,7 @@ export default function MenuSection() {
     const [openMobileItem, setOpenMobileItem] = useState<string | null>(null);
     const [isCompactDesktop, setIsCompactDesktop] = useState(false);
     const [isShortMobile, setIsShortMobile] = useState(false);
+    const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
     const pairedRows = menuData.leftColumn.slice(0, 3).map((leftItem, index) => ({
         left: leftItem,
         right: menuData.rightColumn[index],
@@ -128,17 +137,30 @@ export default function MenuSection() {
         'Italian Deli': '-translate-x-[50%] -translate-y-[50%]',
     };
     const previewOffsetClass = hoveredItem ? previewOffsets[hoveredItem.title] ?? '-translate-x-1/2 -translate-y-1/2' : '-translate-x-1/2 -translate-y-1/2';
+    // Tight mode for 750px-ish heights (common laptop viewport with browser chrome).
+    const isTightCompactDesktop = isCompactDesktop && viewportSize.height > 0 && viewportSize.height <= 770;
     const previewSizeClass = isCompactDesktop ? 'w-[min(27vw,33vh,360px)]' : 'w-[min(34vw,460px)]';
-    const rowHeightClass = isCompactDesktop ? 'min-h-[70px] lg:min-h-[82px]' : 'min-h-[76px] md:min-h-[104px]';
-    const lastRowHeightClass = isCompactDesktop ? 'min-h-[260px] lg:min-h-[300px]' : 'min-h-[360px] md:min-h-[410px]';
+    const rowHeightClass = isCompactDesktop
+        ? isTightCompactDesktop
+            ? 'min-h-[60px] lg:min-h-[72px]'
+            : 'min-h-[66px] lg:min-h-[78px]'
+        : 'min-h-[76px] md:min-h-[104px]';
+    const lastRowHeightClass = isCompactDesktop
+        ? isTightCompactDesktop
+            ? 'min-h-[232px] lg:min-h-[262px]'
+            : 'min-h-[236px] lg:min-h-[276px]'
+        : 'min-h-[360px] md:min-h-[410px]';
     const lastRowLineTopClass = isCompactDesktop ? 'top-[86px] lg:top-[98px]' : 'top-[102px] md:top-[120px]';
 
     useEffect(() => {
         const checkResponsiveModes = () => {
             const width = window.innerWidth;
             const height = window.innerHeight;
-            setIsCompactDesktop(width >= 768 && width < 1440);
+            // Compact desktop menu for shorter viewports (e.g. ~750px height laptops).
+            // Height is the primary constraint (we want everything to fit within 100vh).
+            setIsCompactDesktop(width >= 768 && height < 860);
             setIsShortMobile(width < 768 && height <= 700);
+            setViewportSize({ width, height });
         };
         checkResponsiveModes();
         window.addEventListener('resize', checkResponsiveModes);
@@ -146,7 +168,7 @@ export default function MenuSection() {
     }, []);
 
     return (
-        <section className="section bg-[#F9E0A4] relative overflow-hidden h-screen w-screen flex items-center justify-center px-2 md:px-3">
+        <section className="section menu-fit bg-[#F9E0A4] relative overflow-hidden h-screen w-screen flex items-center justify-center px-2 md:px-3">
             {hoveredItem && (
                 <div className="pointer-events-none absolute inset-0 z-40 hidden md:flex items-center justify-center">
                     <div
@@ -279,35 +301,73 @@ export default function MenuSection() {
                 </div>
             </div>
 
-            <div className={`hidden md:flex w-full h-full max-w-[1800px] flex-col relative ${isCompactDesktop ? 'py-2 translate-y-[3.2%]' : 'py-6 md:py-8 -translate-y-[2%]'}`}>
+            <div
+                className={`hidden md:flex w-full h-full max-w-[1800px] flex-col relative menu-fit-shell ${
+                    isCompactDesktop
+                        ? isTightCompactDesktop
+                            ? 'py-2 translate-y-[0%] origin-top scale-[0.93]'
+                            : 'py-2 -translate-y-[0.75%]'
+                        : 'py-6 md:py-8 -translate-y-[2%]'
+                }`}
+            >
 
                 {/* Header - Top Right */}
-                <div className={`relative border-b-2 border-[#E35A2A] ${isCompactDesktop ? 'mb-5 pt-20 lg:pt-24' : 'mb-8 md:mb-10 pt-24 md:pt-28'}`}>
-                    <h1 className={`absolute right-0 font-display font-normal italic text-brand-brown whitespace-nowrap leading-none ${isCompactDesktop ? '-bottom-0.5 text-[clamp(2.55rem,3.2vw,3.05rem)]' : '-bottom-1 text-5x1'}`}>
+                <div
+                    className={`relative border-b-2 border-[#E35A2A] ${
+                        isCompactDesktop
+                            ? isTightCompactDesktop
+                                ? 'mb-3 pt-14 lg:pt-18'
+                                : 'mb-4 pt-16 lg:pt-20'
+                            : 'mb-8 md:mb-10 pt-24 md:pt-28'
+                    }`}
+                >
+                    <h1 className={`absolute right-0 menu-header-title font-display font-normal italic text-brand-brown whitespace-nowrap leading-none ${isCompactDesktop ? '-bottom-0.5 text-[clamp(2.55rem,3.2vw,3.05rem)]' : '-bottom-1 text-5x1'}`}>
                         Sanguchitos
                     </h1>
                 </div>
 
-                <div className={`flex flex-col flex-1 items-stretch ${isCompactDesktop ? 'gap-y-1.5' : 'gap-y-2 md:gap-y-3'}`}>
+                <div
+                    className={`flex flex-col flex-1 items-stretch ${
+                        isCompactDesktop
+                            ? `justify-between ${isTightCompactDesktop ? 'gap-y-0.5' : 'gap-y-1'}`
+                            : 'gap-y-2 md:gap-y-3'
+                    }`}
+                >
                     {pairedRows.map((row) => (
                         <div
                             key={row.left.title}
                             className={`relative grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-24 ${rowHeightClass} items-end`}
                         >
-                            <RowItem item={row.left} onTitleHover={setHoveredItem} compact={isCompactDesktop} />
-                            <RowItem item={row.right} onTitleHover={setHoveredItem} compact={isCompactDesktop} />
+                            <RowItem item={row.left} onTitleHover={setHoveredItem} compact={isCompactDesktop} tight={isTightCompactDesktop} />
+                            <RowItem item={row.right} onTitleHover={setHoveredItem} compact={isCompactDesktop} tight={isTightCompactDesktop} />
                             <div className="absolute left-0 right-0 bottom-0 h-px bg-[#7A3E2B] z-30" />
                         </div>
                     ))}
 
                     <div className={`relative grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-24 ${lastRowHeightClass}`}>
-                        <div className={isCompactDesktop ? 'pt-6 lg:pt-7' : 'pt-8 md:pt-10'}>
-                            <RowItem item={lastLeft} onTitleHover={setHoveredItem} compact={isCompactDesktop} />
+                        <div className={isCompactDesktop ? (isTightCompactDesktop ? 'pt-4 lg:pt-5' : 'pt-5 lg:pt-6') : 'pt-8 md:pt-10'}>
+                            <RowItem item={lastLeft} onTitleHover={setHoveredItem} compact={isCompactDesktop} tight={isTightCompactDesktop} />
                         </div>
-                        <div className={isCompactDesktop ? 'pt-8 lg:pt-9' : 'pt-10 md:pt-11'}>
-                            <div className={`bg-white/80 border border-[#E9E5DB] relative z-10 backdrop-blur-[2px] ${isCompactDesktop ? 'px-4 py-3 lg:px-6 lg:py-4 translate-y-[11%]' : 'px-5 py-6 md:px-8 md:py-7 translate-y-[10%]'}`}>
+                        <div className={isCompactDesktop ? (isTightCompactDesktop ? 'pt-5 lg:pt-6' : 'pt-7 lg:pt-8') : 'pt-10 md:pt-11'}>
+                            <div
+                                className={`bg-white/80 border border-[#E9E5DB] relative z-10 backdrop-blur-[2px] menu-drinks-box ${
+                                    isCompactDesktop
+                                        ? isTightCompactDesktop
+                                            ? 'px-5 py-3 lg:px-7 lg:py-4 translate-y-[9%] min-h-[220px] lg:min-h-[248px]'
+                                            : 'px-4 py-3 lg:px-6 lg:py-4 translate-y-[7%]'
+                                        : 'px-5 py-6 md:px-8 md:py-7 translate-y-[10%]'
+                                }`}
+                            >
                                 <div className="flex justify-end">
-                                    <h3 className={`font-mono text-brand-brown uppercase ${isCompactDesktop ? 'text-[clamp(0.95rem,1.05vw,1.08rem)] pb-0.5' : 'text-x1 pb-1'}`}>
+                                    <h3
+                                        className={`font-mono text-brand-brown uppercase ${
+                                            isCompactDesktop
+                                                ? isTightCompactDesktop
+                                                    ? 'text-[clamp(1.08rem,1.22vw,1.24rem)] pb-0.5'
+                                                    : 'text-[clamp(0.95rem,1.05vw,1.08rem)] pb-0.5'
+                                                : 'text-x1 pb-1'
+                                        }`}
+                                    >
                                         BEBIDAS & SNACKS
                                     </h3>
                                 </div>
@@ -319,20 +379,52 @@ export default function MenuSection() {
                                             style={{ borderBottomStyle: 'dotted' }}
                                         >
                                             <div className={`grid grid-cols-2 items-center ${isCompactDesktop ? 'py-[1px] px-0.5' : 'py-[2px] px-1'}`}>
-                                                <span className={`font-mono text-brand-brown uppercase ${isCompactDesktop ? 'text-[clamp(0.95rem,1.05vw,1.08rem)]' : 'text-x1'}`}>
+                                                <span
+                                                    className={`font-mono text-brand-brown uppercase ${
+                                                        isCompactDesktop
+                                                            ? isTightCompactDesktop
+                                                                ? 'text-[clamp(1.08rem,1.22vw,1.24rem)]'
+                                                                : 'text-[clamp(0.95rem,1.05vw,1.08rem)]'
+                                                            : 'text-x1'
+                                                    }`}
+                                                >
                                                     {drink.name}
                                                 </span>
-                                                <span className={`font-mono text-brand-brown uppercase ${isCompactDesktop ? 'text-[clamp(0.95rem,1.05vw,1.08rem)]' : 'text-x1'}`}>
+                                                <span
+                                                    className={`font-mono text-brand-brown uppercase ${
+                                                        isCompactDesktop
+                                                            ? isTightCompactDesktop
+                                                                ? 'text-[clamp(1.08rem,1.22vw,1.24rem)]'
+                                                                : 'text-[clamp(0.95rem,1.05vw,1.08rem)]'
+                                                            : 'text-x1'
+                                                    }`}
+                                                >
                                                     {drink.pair}
                                                 </span>
                                             </div>
                                         </div>
                                     ))}
                                     <div className={`grid grid-cols-2 items-center ${isCompactDesktop ? 'pt-3' : 'pt-5'}`}>
-                                        <span className={`font-mono text-brand-brown uppercase ${isCompactDesktop ? 'text-[clamp(0.95rem,1.05vw,1.08rem)]' : 'text-x1'}`}>
+                                        <span
+                                            className={`font-mono text-brand-brown uppercase ${
+                                                isCompactDesktop
+                                                    ? isTightCompactDesktop
+                                                        ? 'text-[clamp(1.08rem,1.22vw,1.24rem)]'
+                                                        : 'text-[clamp(0.95rem,1.05vw,1.08rem)]'
+                                                    : 'text-x1'
+                                            }`}
+                                        >
                                             CHIPS TIYAPUY
                                         </span>
-                                        <span className={`font-mono text-brand-brown uppercase ${isCompactDesktop ? 'text-[clamp(0.95rem,1.05vw,1.08rem)]' : 'text-x1'}`}>
+                                        <span
+                                            className={`font-mono text-brand-brown uppercase ${
+                                                isCompactDesktop
+                                                    ? isTightCompactDesktop
+                                                        ? 'text-[clamp(1.08rem,1.22vw,1.24rem)]'
+                                                        : 'text-[clamp(0.95rem,1.05vw,1.08rem)]'
+                                                    : 'text-x1'
+                                            }`}
+                                        >
                                             COOKIE REPUBLIC
                                         </span>
                                     </div>

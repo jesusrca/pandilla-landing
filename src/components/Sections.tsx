@@ -15,8 +15,8 @@ export function HeroSection() {
     }, []);
 
     return (
-        <div className={`w-full h-full flex flex-col items-center justify-center bg-[#F9E0A4] relative px-5 md:p-8 ${isShortMobile ? 'pt-7 pb-24' : 'pt-12 pb-36'}`}>
-            <div className={`flex flex-col items-center animate-fadeInUp w-full md:translate-y-0 ${isShortMobile ? '-translate-y-7' : '-translate-y-4'}`}>
+        <div className={`w-full h-full hero-fit flex flex-col items-center justify-center bg-[#F9E0A4] relative px-5 md:p-8 ${isShortMobile ? 'pt-7 pb-24' : 'pt-12 pb-36'}`}>
+            <div className={`flex flex-col items-center animate-fadeInUp w-full md:translate-y-0 hero-fit-content ${isShortMobile ? '-translate-y-7' : '-translate-y-4'}`}>
                 <img
                     src="/Brand/logo-pandilla.svg"
                     alt="Pandilla Logo"
@@ -43,7 +43,7 @@ export function HeroSection() {
             </div>
 
             {/* Footer Info */}
-            <div className={`absolute left-0 w-full px-6 md:px-12 flex flex-col md:flex-row justify-between items-center font-mono md:text-[19px] leading-[1.12] text-brand-brown md:gap-4 ${isShortMobile ? 'bottom-4 text-[14px] gap-1.5' : 'bottom-7 text-[17px] gap-2 md:bottom-12'}`}>
+            <div className={`absolute left-0 w-full hero-fit-footer px-6 md:px-12 flex flex-col md:flex-row justify-between items-center font-mono md:text-[19px] leading-[1.12] text-brand-brown md:gap-4 ${isShortMobile ? 'bottom-4 text-[14px] gap-1.5' : 'bottom-7 text-[17px] gap-2 md:bottom-12'}`}>
                 <div className="text-center md:text-left">
                     <a
                         href="https://www.google.com/maps/search/?api=1&query=Elias+Aguirre+277%2C+Miraflores%2C+Lima"
@@ -266,15 +266,15 @@ export function DeliciousSection() {
     }, []);
 
     return (
-        <div className="w-full h-full bg-[#F9E0A4] relative overflow-hidden">
-            <div className={`absolute inset-x-0 md:top-[9%] ${isShortMobile ? 'top-[6.2%]' : 'top-[8%]'}`}>
+        <div className="w-full h-full final-fit bg-[#F9E0A4] relative overflow-hidden">
+            <div className={`absolute inset-x-0 final-fit-top md:top-[9%] ${isShortMobile ? 'top-[6.2%]' : 'top-[8%]'}`}>
                 <div className={`relative md:h-[16vh] border-b border-brand-brown/65 ${isShortMobile ? 'h-[12vh]' : 'h-[14.2vh]'}`}>
                     <h1
                         className={`absolute left-1/2 md:left-[18%] -translate-x-1/2 md:translate-x-0 font-display text-brand-brown leading-none whitespace-nowrap md:bottom-[-14px] md:text-[clamp(4.8rem,9.4vw,9rem)] ${
                             isShortMobile
                                 ? 'bottom-[-6px] text-[clamp(2.7rem,10.6vw,4.35rem)]'
                                 : 'bottom-[-8px] text-[clamp(3.35rem,12.6vw,9rem)]'
-                        }`}
+                        } final-fit-title`}
                     >
                         Los Deliciosos
                     </h1>
@@ -293,7 +293,7 @@ export function DeliciousSection() {
                             isShortMobile
                                 ? 'bottom-[-6px] text-[clamp(2.7rem,10.6vw,4.35rem)]'
                                 : 'bottom-[-8px] text-[clamp(3.35rem,12.6vw,9rem)]'
-                        }`}
+                        } final-fit-title`}
                     >
                         Sanguchitos
                     </h2>
@@ -312,7 +312,7 @@ export function DeliciousSection() {
                             isShortMobile
                                 ? 'bottom-[-6px] text-[clamp(2.7rem,10.6vw,4.35rem)]'
                                 : 'bottom-[-8px] text-[clamp(3.35rem,12.6vw,9rem)]'
-                        }`}
+                        } final-fit-title`}
                     >
                         del Barrio
                     </h3>
@@ -329,7 +329,7 @@ export function DeliciousSection() {
             <div className={`absolute left-1/2 -translate-x-1/2 md:top-[64%] ${isShortMobile ? 'top-[56.5%]' : 'top-[63%]'}`}>
                 <button
                     type="button"
-                    className={`font-mono md:text-x1 leading-none text-brand-brown md:px-7 md:py-4 md:min-w-0 bg-white/68 border border-[#E9E5DB]/70 uppercase hover-shake ${
+                    className={`font-mono final-fit-button md:text-x1 leading-none text-brand-brown md:px-7 md:py-4 md:min-w-0 bg-white/68 border border-[#E9E5DB]/70 uppercase hover-shake ${
                         isShortMobile ? 'text-[12px] px-7 py-2 min-w-[254px]' : 'text-[14px] px-10 py-3 min-w-[320px]'
                     }`}
                 >
@@ -337,7 +337,7 @@ export function DeliciousSection() {
                 </button>
             </div>
 
-            <div className={`absolute left-0 w-full md:px-12 flex flex-col md:flex-row justify-between items-center font-mono text-brand-brown md:text-xl md:gap-4 ${
+            <div className={`absolute left-0 w-full final-fit-footer md:px-12 flex flex-col md:flex-row justify-between items-center font-mono text-brand-brown md:text-xl md:gap-4 ${
                 isShortMobile ? 'bottom-3 px-6 text-[13px] leading-[1.08] gap-1.5' : 'bottom-12 px-12 gap-4'
             }`}>
                 <div className="text-center md:text-left">

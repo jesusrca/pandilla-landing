@@ -267,7 +267,7 @@ export default function ScrollContainer({ children }: ScrollContainerProps) {
     const activeCursor = `url('${sessionCursor}') 10 10, auto`;
 
         return (
-        <div className="relative h-screen w-screen overflow-hidden bg-[#F9E0A4]" style={{ cursor: activeCursor }}>
+        <div className="relative app-viewport w-screen overflow-hidden bg-[#F9E0A4]" style={{ cursor: activeCursor }}>
             {/* Moving Characters Overlay */}
             <div className="absolute inset-0 pointer-events-none z-[500]">
             <motion.div

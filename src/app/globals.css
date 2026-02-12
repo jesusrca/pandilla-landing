@@ -302,6 +302,8 @@
 :root {
   --background: #F9E0A4;
   --foreground: #75391C;
+  --fit-scale: 1;
+  --fit-gap-scale: 1;
 }
 
 body {
@@ -311,6 +313,83 @@ body {
   overflow: hidden;
   height: 100dvh;
   width: 100vw;
+}
+
+.app-viewport {
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+@supports (height: 100dvh) {
+  .app-viewport {
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+}
+
+@media (max-height: 720px) and (min-width: 768px) and (max-width: 1399px) {
+  :root {
+    --fit-scale: 0.93;
+    --fit-gap-scale: 0.9;
+  }
+
+  .menu-fit .menu-fit-shell {
+    transform: translateY(4.1%) scale(var(--fit-scale));
+    transform-origin: top center;
+  }
+
+  .menu-fit .menu-header-title {
+    font-size: clamp(2.35rem, 2.95vw, 2.85rem);
+  }
+
+  .menu-fit .menu-dish-title {
+    font-size: clamp(2.2rem, 2.7vw, 2.75rem);
+  }
+
+  .menu-fit .menu-dish-desc {
+    font-size: clamp(0.9rem, 1vw, 1.02rem);
+    line-height: 1.06;
+  }
+
+  .menu-fit .menu-drinks-box {
+    transform: translateY(14%);
+  }
+}
+
+@media (max-height: 700px) and (max-width: 767px) {
+  :root {
+    --fit-scale: 0.84;
+    --fit-gap-scale: 0.78;
+  }
+
+  .hero-fit .hero-fit-content {
+    transform: translateY(-0.7rem) scale(var(--fit-scale));
+    transform-origin: top center;
+  }
+
+  .hero-fit .hero-fit-footer {
+    font-size: 13px;
+    line-height: 1.06;
+    bottom: 0.7rem;
+  }
+
+  .final-fit .final-fit-top {
+    transform: scale(var(--fit-scale));
+    transform-origin: top center;
+  }
+
+  .final-fit .final-fit-button {
+    font-size: 12px;
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
+  }
+
+  .final-fit .final-fit-footer {
+    font-size: 13px;
+    line-height: 1.06;
+    bottom: 0.7rem;
+  }
 }
 
 /* Custom Utilities */
