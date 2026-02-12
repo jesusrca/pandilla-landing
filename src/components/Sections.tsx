@@ -20,6 +20,11 @@ export function HeroSection() {
                 <img
                     src="/Brand/logo-pandilla.svg"
                     alt="Pandilla Logo"
+                    width={1061}
+                    height={288}
+                    fetchPriority="high"
+                    loading="eager"
+                    decoding="async"
                     className={`max-w-[850px] h-auto ${isShortMobile ? 'w-[82vw] mb-4' : 'w-[92vw] mb-6 md:mb-8'}`}
                 />
 
@@ -30,6 +35,9 @@ export function HeroSection() {
                 <img
                     src="/Brand/age-pandilla.svg"
                     alt="EST 2024"
+                    width={215}
+                    height={45}
+                    decoding="async"
                     className={`max-w-[215px] h-auto ${isShortMobile ? 'w-[36vw] min-w-[122px]' : 'w-[42vw] min-w-[148px]'}`}
                 />
             </div>
@@ -38,6 +46,10 @@ export function HeroSection() {
                 <img
                     src="/content/swipe.svg"
                     alt="Swipe hint"
+                    width={46}
+                    height={46}
+                    loading="lazy"
+                    decoding="async"
                     className={`h-auto animate-swipe-hint opacity-50 ${isShortMobile ? 'w-[38px]' : 'w-[46px]'}`}
                 />
             </div>
@@ -199,6 +211,10 @@ export function PowerSection() {
                     <img
                         src="/content/Swipe-up.svg"
                         alt="Swipe up hint"
+                        width={46}
+                        height={46}
+                        loading="lazy"
+                        decoding="async"
                         className="w-[46px] h-auto animate-swipe-down-hint"
                     />
                 </div>

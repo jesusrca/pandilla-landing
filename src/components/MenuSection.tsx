@@ -192,13 +192,13 @@ export default function MenuSection() {
                 style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}
             >
                 <div className={`relative border-b border-[#E35A2A] ${isShortMobile ? 'mb-3' : 'mb-5'}`}>
-                    <h1
+                    <h2
                         className={`font-display font-normal italic leading-none text-brand-brown text-right ${
                             isShortMobile ? 'text-[2.08rem] pb-0.5' : 'text-[2.5rem] pb-1'
                         }`}
                     >
                         Sanguchitos
-                    </h1>
+                    </h2>
                 </div>
 
                 <div className={isShortMobile ? 'space-y-0.5' : 'space-y-1'}>
@@ -321,9 +321,9 @@ export default function MenuSection() {
                             : 'mb-8 md:mb-10 pt-24 md:pt-28'
                     }`}
                 >
-                    <h1 className={`absolute right-0 menu-header-title font-display font-normal italic text-brand-brown whitespace-nowrap leading-none ${isCompactDesktop ? '-bottom-0.5 text-[clamp(2.55rem,3.2vw,3.05rem)]' : '-bottom-1 text-5x1'}`}>
+                    <h2 className={`absolute right-0 menu-header-title font-display font-normal italic text-brand-brown whitespace-nowrap leading-none ${isCompactDesktop ? '-bottom-0.5 text-[clamp(2.55rem,3.2vw,3.05rem)]' : '-bottom-1 text-5x1'}`}>
                         Sanguchitos
-                    </h1>
+                    </h2>
                 </div>
 
                 <div
