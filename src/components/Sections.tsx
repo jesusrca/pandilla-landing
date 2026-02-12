@@ -322,6 +322,13 @@ export function TeamSection() {
 
 export function DeliciousSection() {
     const [isShortMobile, setIsShortMobile] = useState(false);
+    const hostRef = useRef<HTMLDivElement | null>(null);
+    const floatRefs = useRef<Array<HTMLDivElement | null>>([]);
+    const floatTargetsRef = useRef<Array<{ x: number; y: number }>>([
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+    ]);
 
     useEffect(() => {
         const checkShortMobile = () => {
@@ -332,8 +339,137 @@ export function DeliciousSection() {
         return () => window.removeEventListener('resize', checkShortMobile);
     }, []);
 
+    useEffect(() => {
+        const host = hostRef.current;
+        if (!host) return;
+
+        let raf = 0;
+        const current = [
+            { x: 0, y: 0 },
+            { x: 0, y: 0 },
+            { x: 0, y: 0 },
+        ];
+
+        const strengths = [
+            { max: 18, radius: 220 },
+            { max: 22, radius: 240 },
+            { max: 24, radius: 260 },
+        ];
+
+        const tick = () => {
+            raf = window.requestAnimationFrame(tick);
+            for (let i = 0; i < 3; i++) {
+                const el = floatRefs.current[i];
+                if (!el) continue;
+                const t = floatTargetsRef.current[i]!;
+                // Smooth follow
+                current[i]!.x += (t.x - current[i]!.x) * 0.09;
+                current[i]!.y += (t.y - current[i]!.y) * 0.09;
+                el.style.transform = `translate3d(${current[i]!.x.toFixed(2)}px, ${current[i]!.y.toFixed(2)}px, 0)`;
+            }
+        };
+        raf = window.requestAnimationFrame(tick);
+
+        const onMouseMove = (e: MouseEvent) => {
+            // Desktop-only "repel" effect.
+            if (window.innerWidth < 768) return;
+            const cx = e.clientX;
+            const cy = e.clientY;
+            for (let i = 0; i < 3; i++) {
+                const wrap = floatRefs.current[i];
+                const inner = wrap?.firstElementChild as HTMLElement | null;
+                if (!wrap || !inner) continue;
+                const rect = inner.getBoundingClientRect();
+                const ex = rect.left + rect.width / 2;
+                const ey = rect.top + rect.height / 2;
+                const dx = ex - cx;
+                const dy = ey - cy;
+                const dist = Math.hypot(dx, dy) || 1;
+                const { max, radius } = strengths[i]!;
+                if (dist >= radius) {
+                    floatTargetsRef.current[i] = { x: 0, y: 0 };
+                    continue;
+                }
+                const push = (1 - dist / radius) * max;
+                const nx = dx / dist;
+                const ny = dy / dist;
+                floatTargetsRef.current[i] = { x: nx * push, y: ny * push };
+            }
+        };
+
+        const onMouseLeave = () => {
+            for (let i = 0; i < 3; i++) floatTargetsRef.current[i] = { x: 0, y: 0 };
+        };
+
+        host.addEventListener('mousemove', onMouseMove);
+        host.addEventListener('mouseleave', onMouseLeave);
+
+        // Mobile "shake/parallax" via DeviceOrientation (iOS requires user gesture to enable; we degrade gracefully).
+        let lastGamma = 0;
+        let lastBeta = 0;
+        const onOrientation = (ev: DeviceOrientationEvent) => {
+            if (window.innerWidth >= 768) return;
+            const gamma = ev.gamma ?? 0; // left/right tilt (-90..90)
+            const beta = ev.beta ?? 0; // front/back tilt (-180..180)
+            const dg = gamma - lastGamma;
+            const db = beta - lastBeta;
+            lastGamma = gamma;
+            lastBeta = beta;
+
+            // Use both absolute tilt (parallax) and delta (shake) in a bounded way.
+            const tiltX = Math.max(-1, Math.min(1, gamma / 25));
+            const tiltY = Math.max(-1, Math.min(1, beta / 25));
+            const shakeX = Math.max(-1, Math.min(1, dg / 12));
+            const shakeY = Math.max(-1, Math.min(1, db / 12));
+
+            const base = isShortMobile ? 10 : 14;
+            for (let i = 0; i < 3; i++) {
+                const mul = 1 + i * 0.25;
+                floatTargetsRef.current[i] = {
+                    x: (tiltX * base + shakeX * (base * 0.55)) * mul,
+                    y: (tiltY * base + shakeY * (base * 0.55)) * mul,
+                };
+            }
+        };
+
+        const tryEnableMotion = () => {
+            type DeviceOrientationPermissionAPI = {
+                requestPermission?: () => Promise<'granted' | 'denied'>;
+            };
+            const DeviceOrientationMaybe = DeviceOrientationEvent as unknown as DeviceOrientationPermissionAPI;
+            const maybePermission = typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationMaybe.requestPermission === 'function';
+            if (maybePermission) {
+                DeviceOrientationMaybe.requestPermission!().then((res) => {
+                    if (res === 'granted') window.addEventListener('deviceorientation', onOrientation);
+                }).catch(() => {
+                    // ignore
+                });
+            } else {
+                window.addEventListener('deviceorientation', onOrientation);
+            }
+        };
+
+        // Only attempt enabling on first user interaction to satisfy iOS permission requirements.
+        const onFirstTouch = () => {
+            tryEnableMotion();
+            window.removeEventListener('touchstart', onFirstTouch);
+            window.removeEventListener('pointerdown', onFirstTouch);
+        };
+        window.addEventListener('touchstart', onFirstTouch, { passive: true });
+        window.addEventListener('pointerdown', onFirstTouch, { passive: true });
+
+        return () => {
+            window.cancelAnimationFrame(raf);
+            host.removeEventListener('mousemove', onMouseMove);
+            host.removeEventListener('mouseleave', onMouseLeave);
+            window.removeEventListener('deviceorientation', onOrientation);
+            window.removeEventListener('touchstart', onFirstTouch);
+            window.removeEventListener('pointerdown', onFirstTouch);
+        };
+    }, [isShortMobile]);
+
     return (
-        <div className="w-full h-full final-fit bg-[#F9E0A4] relative overflow-hidden">
+        <div ref={hostRef} className="w-full h-full final-fit bg-[#F9E0A4] relative overflow-hidden">
             <div className={`absolute inset-x-0 final-fit-top md:top-[9%] ${isShortMobile ? 'top-[6.2%]' : 'top-[8%]'}`}>
                 <div className={`relative md:h-[16vh] border-b border-brand-brown/65 ${isShortMobile ? 'h-[12vh]' : 'h-[14.2vh]'}`}>
                     <h1
@@ -345,13 +481,20 @@ export function DeliciousSection() {
                     >
                         Los Deliciosos
                     </h1>
-                    <img
-                        src="/Brand/ave.svg"
-                        alt="Ave Pandilla"
-                        className={`absolute right-[7%] md:right-[14%] md:bottom-[18%] md:w-[clamp(90px,12vw,195px)] h-auto animate-float-soft-1 ${
-                            isShortMobile ? 'bottom-[49%] w-[74px]' : 'bottom-[44%] w-[92px]'
-                        }`}
-                    />
+                    <div
+                        ref={(el) => { floatRefs.current[0] = el; }}
+                        className="absolute right-[7%] md:right-[14%] md:bottom-[18%]"
+                        style={{ willChange: 'transform' }}
+                    >
+                        <img
+                            src="/Brand/ave.svg"
+                            alt="Ave Pandilla"
+                            className={`md:w-[clamp(90px,12vw,195px)] h-auto animate-float-soft-1 ${
+                                isShortMobile ? 'bottom-[49%] w-[74px]' : 'bottom-[44%] w-[92px]'
+                            }`}
+                            style={{ position: 'relative' }}
+                        />
+                    </div>
                 </div>
 
                 <div className={`relative md:h-[16vh] border-b border-brand-brown/65 ${isShortMobile ? 'h-[12vh]' : 'h-[14.2vh]'}`}>
@@ -364,13 +507,20 @@ export function DeliciousSection() {
                     >
                         Sanguchitos
                     </h2>
-                    <img
-                        src="/Brand/gato.svg"
-                        alt="Gato Pandilla"
-                        className={`absolute right-[8%] md:right-[12%] md:bottom-[-3%] md:w-[clamp(92px,12vw,205px)] h-auto animate-float-soft-2 ${
-                            isShortMobile ? 'bottom-[22%] w-[86px]' : 'bottom-[16%] w-[108px]'
-                        }`}
-                    />
+                    <div
+                        ref={(el) => { floatRefs.current[1] = el; }}
+                        className="absolute right-[8%] md:right-[12%] md:bottom-[-3%]"
+                        style={{ willChange: 'transform' }}
+                    >
+                        <img
+                            src="/Brand/gato.svg"
+                            alt="Gato Pandilla"
+                            className={`md:w-[clamp(92px,12vw,205px)] h-auto animate-float-soft-2 ${
+                                isShortMobile ? 'bottom-[22%] w-[86px]' : 'bottom-[16%] w-[108px]'
+                            }`}
+                            style={{ position: 'relative' }}
+                        />
+                    </div>
                 </div>
 
                 <div className={`relative md:h-[16vh] border-b border-brand-brown/65 ${isShortMobile ? 'h-[12vh]' : 'h-[14.2vh]'}`}>
@@ -383,13 +533,20 @@ export function DeliciousSection() {
                     >
                         del Barrio
                     </h3>
-                    <img
-                        src="/Brand/oso.svg"
-                        alt="Oso Pandilla"
-                        className={`absolute left-[8%] md:left-[20%] md:bottom-[-45%] md:w-[clamp(100px,13vw,230px)] h-auto animate-float-soft-3 ${
-                            isShortMobile ? 'bottom-[-24%] w-[88px]' : 'bottom-[-32%] w-[116px]'
-                        }`}
-                    />
+                    <div
+                        ref={(el) => { floatRefs.current[2] = el; }}
+                        className="absolute left-[8%] md:left-[20%] md:bottom-[-45%]"
+                        style={{ willChange: 'transform' }}
+                    >
+                        <img
+                            src="/Brand/oso.svg"
+                            alt="Oso Pandilla"
+                            className={`md:w-[clamp(100px,13vw,230px)] h-auto animate-float-soft-3 ${
+                                isShortMobile ? 'bottom-[-24%] w-[88px]' : 'bottom-[-32%] w-[116px]'
+                            }`}
+                            style={{ position: 'relative' }}
+                        />
+                    </div>
                 </div>
             </div>
 
